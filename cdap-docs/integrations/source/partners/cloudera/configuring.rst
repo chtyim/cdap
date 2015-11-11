@@ -137,9 +137,8 @@ Complete instructions, step-by-step, for using the Admin Console *Add Service* W
 
 .. _cloudera-verification:
 
-.. include:: ../../../../admin-manual/source/installation/configuration.rst
+.. include:: ../../../../admin-manual/source/installation/starting-cdap.rst
    :start-after: .. _configuration-verification:
-   :end-before:  .. _configuration-upgrade:
 
 Upgrading an Existing Version
 =======================================
@@ -204,13 +203,13 @@ goes wrong, see these troubleshooting instructions for :ref:`problems while upgr
 **Upgrade Steps**
 
 1. If using Cloudera Manager, :ref:`stop all CDAP application and services
-   <configuration-upgrade>`, as Cloudera Manager will have auto-started CDAP
+   <upgrading-cdap>`, as Cloudera Manager will have auto-started CDAP
 #. Disable all CDAP tables; from an HBase shell, run this command::
 
     > disable_all 'cdap.*'
     
 #. Upgrade to CDH 5.4
-#. :ref:`Stop all CDAP services <configuration-upgrade>`, as CDH will have auto-started CDAP
+#. :ref:`Stop all CDAP services <upgrading-cdap>`, as CDH will have auto-started CDAP
 #. Run the CDAP Upgrade Tool, as the user that runs CDAP Master (the CDAP user)::
 
     $ /opt/cdap/master/bin/svc-master run co.cask.cdap.data.tools.UpgradeTool upgrade_hbase

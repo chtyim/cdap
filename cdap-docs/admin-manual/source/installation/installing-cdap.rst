@@ -9,6 +9,7 @@ Installing CDAP
 ===============
 
 .. Note: this file is included in quick-start.rst; check any edits in this file with it!
+.. Note: this file is included in upgrading.rst; check any edits in this file with it!
 
 This manual is to help you install the Cask Data Application Platform (CDAP). It provides the
 `system <#system-requirements>`__, 
@@ -19,7 +20,7 @@ instructions for
 `installation <#installation>`__ of
 the CDAP components so they work with your existing Hadoop cluster.
 
-There are specific instructions for :ref:`upgrading existing CDAP installations <configuration-upgrade>`.
+There are specific instructions for :ref:`upgrading existing CDAP installations <upgrading-cdap>`.
 
 Once installed, another page :ref:`covers configuration <configuration>` of the CDAP installation.
 

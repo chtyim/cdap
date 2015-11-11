@@ -12,7 +12,7 @@ Configuring and Installing CDAP on MapR
 
 This section will assist you with installing CDAP on `MapR <https://www.mapr.com>`__. CDAP
 can be installed on a MapR cluster by following the :ref:`manual instructions for installing
-CDAP <install>`. These notes are an addition to those steps.
+CDAP <installing-cdap>`. These notes are an addition to those steps.
 
 As described in the :ref:`Software Prerequisites <install-software-requirements>`, 
 a configured Hadoop and HBase (plus an optional Hive client) needs to be configured

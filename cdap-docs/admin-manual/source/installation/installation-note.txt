@@ -13,7 +13,7 @@
     or HDP clusters not managed with Ambari) you can follow the manual method referenced below on
     this page, using either our :ref:`quick start installation instructions
     <installation-quick-start>` or by following our :ref:`general installation
-    instructions <install>`. Use the general instructions if you have either an unusual
+    instructions <installing-cdap>`. Use the general instructions if you have either an unusual
     situation |---| such as HA (high availability) |---| or would like more details on the
     steps and the available options.
 

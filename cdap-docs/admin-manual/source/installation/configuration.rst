@@ -14,9 +14,9 @@ This manual is to help you configure Cask Data Application Platform (CDAP). It p
 the instructions for `configuration <#configuration>`__ and `verification
 <#verification>`__ of the CDAP components so they work with your existing Hadoop cluster.
 There are specific instructions for :ref:`upgrading existing CDAP
-installations<configuration-upgrade>`.
+installations <upgrading-cdap>`.
 
-It's assumed that you have already followed the :ref:`installation steps <install>`.
+It's assumed that you have already followed the :ref:`installation steps <installing-cdap>`.
 
 .. _configuration-central:
 

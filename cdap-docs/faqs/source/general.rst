@@ -38,11 +38,11 @@ in your environment; we recommend the Oracle JDK.
 
 What version of Node.js is required by CDAP?
 --------------------------------------------
-We recommend any version of `Node.js <https://nodejs.org/>`__ |node-js-version|.
+CDAP requires any version of `Node.js <https://nodejs.org/>`__ |node-js-version|.
 
 I have a Hadoop cluster in my data center, can I run CDAP that uses my Hadoop cluster?
 --------------------------------------------------------------------------------------
-Yes. You can install CDAP Distributed on your Hadoop cluster. See the :ref:`Installation procedure <install>`.
+Yes. You can install CDAP Distributed on your Hadoop cluster. See the :ref:`Installation procedure <installing-cdap>`.
 
 What Hadoop distributions can CDAP run on?
 ------------------------------------------

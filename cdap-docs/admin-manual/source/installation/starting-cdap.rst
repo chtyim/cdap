@@ -14,7 +14,7 @@ This manual is to help you start up the Cask Data Application Platform (CDAP). I
 the instructions for `startup <#configuration>`__ and `verification <#verification>`__ of
 the CDAP components so they work with your existing Hadoop cluster.
 
-It's assumed that you have already followed the :ref:`installation <install>` and
+It's assumed that you have already followed the :ref:`installation <installing-cdap>` and
 :ref:`configuration <configuration>` steps.
 
 .. _configuration-starting-services:

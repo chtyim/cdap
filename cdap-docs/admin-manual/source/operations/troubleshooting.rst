@@ -46,7 +46,7 @@ Things to check as possible solutions:
     /opt/cdap/master/conf/
     /opt/cdap/master/lib/*
 
-   If the classpath is incorrect, review the :ref:`installation instructions <install>` and correct.
+   If the classpath is incorrect, review the :ref:`installation instructions <installing-cdap>` and correct.
    
 
 .. rubric:: No Metrics or Logs

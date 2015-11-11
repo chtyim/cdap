@@ -29,13 +29,13 @@ please follow the upgrade instructions for the earlier versions and upgrade firs
  
    - Using Yum:
 
-     .. include:: installation.rst 
+     .. include:: installing-cdap.rst 
         :start-after: Download the Cask Yum repo definition file:
         :end-before:  .. end_install-rpm-using-yum
 
    - Using APT:
 
-     .. include:: installation.rst 
+     .. include:: installing-cdap.rst 
         :start-after: Download the Cask APT repo definition file:
         :end-before:  .. end_install-debian-using-apt
 

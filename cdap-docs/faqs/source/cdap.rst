@@ -37,7 +37,7 @@ using `Cloudera Manager <http://www.cloudera.com/content/www/en-us/products/clou
 
 I've followed the install instructions, yet CDAP does not start and fails verification. What next?
 --------------------------------------------------------------------------------------------------
-If you have followed :ref:`the installation instructions <install>`, and CDAP either did not pass the 
+If you have followed :ref:`the installation instructions <installing-cdap>`, and CDAP either did not pass the 
 :ref:`verification step <configuration-verification>` or did not startup, check:
 
 - Look in the CDAP logs for error messages (located either in ``/var/log/cdap`` for CDAP Distributed or 
