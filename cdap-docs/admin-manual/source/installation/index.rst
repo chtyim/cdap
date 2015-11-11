@@ -14,8 +14,11 @@ Installation
    :maxdepth: 1
    
     Quick Start <quick-start>
-    Installation <installation>
+    Installing CDAP <installing-cdap>
     Configuration <configuration>
+    Starting CDAP <starting-cdap>
+    Troubleshooting <troubleshooting>
+    Upgrading CDAP <upgrading>
     Security <security>
     Appendix: cdap-site.xml <cdap-site>
     Appendix: cdap-security.xml <cdap-security>

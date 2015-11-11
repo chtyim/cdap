@@ -2,16 +2,13 @@
     :author: Cask Data, Inc.
     :copyright: Copyright © 2014-2015 Cask Data, Inc.
 
-.. _install:
+.. _installing-cdap:
 
-============
-Installation
-============
+===============
+Installing CDAP
+===============
 
 .. Note: this file is included in quick-start.rst; check any edits in this file with it!
-
-Introduction
-------------
 
 This manual is to help you install the Cask Data Application Platform (CDAP). It provides the
 `system <#system-requirements>`__, 
@@ -229,22 +226,22 @@ the number of connections required is a function of usage.
 .. _deployment-architectures:
 
 Deployment Architectures
-........................
+------------------------
 
-.. rubric:: CDAP Minimal Deployment
-
+CDAP Minimal Deployment
+.......................
 **Note:** Minimal deployment runs all the services on single host.
 
 .. image:: ../_images/cdap-minimal-deployment.png
    :width: 8in
    :align: center
 
-------------
+.. ------------
 
 .. _deployment-architectures-ha:
 
-.. rubric:: CDAP High Availability and Highly Scalable Deployment
-
+CDAP High Availability and Highly Scalable Deployment
+.....................................................
 **Note:** Each component in CDAP is horizontally scalable. This diagram presents the high
 availability and highly scalable deployment. The number of nodes for each component can be
 changed based on the requirements.
@@ -383,4 +380,3 @@ Do this on each of the boxes that are being used for the CDAP components; our
 recommended installation is a minimum of two boxes.
 
 This will download and install the latest version of CDAP with all of its dependencies. 
-
