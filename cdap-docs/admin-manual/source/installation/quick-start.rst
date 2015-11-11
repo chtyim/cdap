@@ -13,9 +13,9 @@ CDAP on a Hadoop cluster, through the running of a verification application in C
 
 .. "Follow these instructions"
 
-.. include:: installing-cdap.rst 
-   :start-after: .. _install-follow-these-instructions
-   :end-before:  .. _install-these-are-the-cdap-components
+.. include:: installation.rst 
+   :start-after: .. _install-follow-these-instructions:
+   :end-before:  .. _install-these-are-the-cdap-components:
 
 .. highlight:: console
 
@@ -43,7 +43,7 @@ Preparing the Cluster
 
 .. "To prepare your cluster"
 
-.. include:: installing-cdap.rst 
+.. include:: installation.rst 
    :start-after: .. _install-preparing-the-cluster:
    :end-before:  .. _install-preparing-the-cluster-defaults:
 
@@ -68,7 +68,7 @@ the packages, and prior to starting services.
 Configuring Package Managers
 ----------------------------
 
-.. include:: installing-cdap.rst
+.. include:: installation.rst 
    :start-after: .. _install-rpm-using-yum:
 
 
