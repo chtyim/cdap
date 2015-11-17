@@ -254,7 +254,7 @@ angular
    * attached to the <body> tag, mostly responsible for
    *  setting the className based events from $state and caskTheme
    */
-  .controller('BodyCtrl', function ($scope, $cookies, $cookieStore, caskTheme, CASK_THEME_EVENT, $rootScope, $state, $log, MYSOCKET_EVENT, MyCDAPDataSource, MY_CONFIG, MYAUTH_EVENT, EventPipe, myAuth) {
+  .controller('BodyCtrl', function ($scope, caskTheme, CASK_THEME_EVENT, $rootScope, $state, $log, MYSOCKET_EVENT, MyCDAPDataSource, MY_CONFIG, MYAUTH_EVENT, EventPipe, myAuth, $timeout) {
 
     var activeThemeClass = caskTheme.getClassName();
     var dataSource = new MyCDAPDataSource($scope);
@@ -310,9 +310,9 @@ angular
       $log.log('[DataSource] reconnected, reloading...');
 
       // https://github.com/angular-ui/ui-router/issues/582
-      $state.transitionTo($state.current, $state.$current.params,
-        { reload: true, inherit: true, notify: true }
-      );
+      $timeout(function() {
+        $state.reload();
+      }, 3000);
     });
 
     $rootScope.$on('$stateChangeError', function () {

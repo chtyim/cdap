@@ -12,7 +12,7 @@
     "font-awesome": "4.3.0",
     "angular-strap": "2.3.1",
     "angular-motion": "0.3.4",
-    "angular-ui-router": "0.2.14",
+    "angular-ui-router": "0.2.15",
     "angular-loading-bar": "0.7.1",
     "ngstorage": "0.3.0",
     "cask-angular-capitalize": "https://github.com/caskdata/ng-capsules/raw/develop/zip/cask-angular-capitalize.zip",

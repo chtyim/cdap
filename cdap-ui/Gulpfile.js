@@ -235,14 +235,14 @@ gulp.task('watch:js:app:babel', function() {
   return gulp.src(getEs6Features())
     .pipe(plug.plumber())
     .pipe(plug.ngAnnotate())
-    .pipe(plug.sourcemaps.init())
+    // .pipe(plug.sourcemaps.init())
     .pipe(plug.wrapper({
        header: '\n(function (PKG){ /* ${filename} */\n',
        footer: '\n})('+PKG+');\n'
     }))
     .pipe(plug.babel())
     .pipe(plug.concat('app.es6.js'))
-    .pipe(plug.sourcemaps.write("."))
+    // .pipe(plug.sourcemaps.write("."))
     .pipe(gulp.dest('./dist/assets/bundle'));
 });
 

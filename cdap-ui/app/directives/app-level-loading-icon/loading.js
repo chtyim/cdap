@@ -15,7 +15,7 @@
  */
 
 angular.module(PKG.name + '.commons')
-  .directive('loadingIcon', function(myLoadingService, $bootstrapModal, $timeout, EventPipe, $state, $alert) {
+  .directive('loadingIcon', function(myLoadingService, $bootstrapModal, $timeout, EventPipe, $state, $alert, MYSOCKET_EVENT) {
     return {
       restrict: 'EA',
       scope: true,
@@ -43,7 +43,8 @@ angular.module(PKG.name + '.commons')
             }
             modal = $bootstrapModal.open(modalObj);
             modal.result.finally(function() {
-              $state.go('overview', {}, {reload: true});
+              // $state.go('overview', {}, {reload: true});
+              EventPipe.emit(MYSOCKET_EVENT.reconnected);
             });
           }
         }.bind($scope));
