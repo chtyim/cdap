@@ -20,17 +20,6 @@
   <!-- General Configuration -->
 
   <property>
-    <name>root.namespace</name>
-    <value>cdap</value>
-    <description>
-      Root for this CDAP instance; used as the parent (or root) node for
-      ZooKeeper, as the directory under which all CDAP data and metadata is
-      stored in HDFS, and as the prefix for all HBase tables created by
-      CDAP; must be composed of alphanumeric characters
-    </description>
-  </property>
-
-  <property>
     <name>hdfs.namespace</name>
     <value>/${root.namespace}</value>
     <description>
@@ -46,7 +35,17 @@
     </description>
   </property>
 
-  <!-- Substitute the zookeeper quorum for components here -->
+  <property>
+    <name>root.namespace</name>
+    <value>cdap</value>
+    <description>
+      Root for this CDAP instance; used as the parent (or root) node for
+      ZooKeeper, as the directory under which all CDAP data and metadata is
+      stored in HDFS, and as the prefix for all HBase tables created by
+      CDAP; must be composed of alphanumeric characters
+    </description>
+  </property>
+
   <property>
     <name>zookeeper.quorum</name>
     <value>FQDN1:2181,FQDN2:2181/${root.namespace}</value>
