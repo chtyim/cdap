@@ -47,7 +47,7 @@ Installation
 .. |sdk| replace:: **CDAP Standalone SDK:**
 .. _sdk: ../developers-manual/getting-started/standalone/index.html
 
-- |sdk|_ Installing the CDAP Standalone SDK on Linux, MacOS, and Windows systems.
+- |sdk|_ Installing the CDAP Standalone SDK on Linux, MacOS, and Windows systems. *(Developers' Manual)*
 
 
 .. rubric:: Putting CDAP into Production

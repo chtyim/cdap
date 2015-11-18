@@ -17,27 +17,27 @@ After completing the configuration, you can `start and verify <starting-verifica
 Configuration
 -------------
 
-CDAP packages utilize a central configuration, stored by default in ``/etc/cdap``.
+#. CDAP packages utilize a central configuration, stored by default in ``/etc/cdap``.
 
-When you install the CDAP base package, a default configuration is placed in
-``/etc/cdap/conf.dist``. The ``cdap-site.xml`` file is a placeholder
-where you can define your specific configuration for all CDAP components.
-The ``cdap-site.xml.example`` file shows the properties that usually require customization
-for all installations.
-
-.. _distribution-configuration-alternatives:
-
-Similar to Hadoop, CDAP utilizes the ``alternatives`` framework to allow you to
-easily switch between multiple configurations. The ``alternatives`` system is used for ease of
-management and allows you to to choose between different directories to fulfill the
-same purpose.
-
-Simply copy the contents of ``/etc/cdap/conf.dist`` into a directory of your choice
-(such as ``/etc/cdap/conf.mycdap``) and make all of your customizations there.
-Then run the ``alternatives`` command to point the ``/etc/cdap/conf`` symlink
-to your custom directory.
-
-.. _distribution-configuration-options:
+   When you install the CDAP base package, a default configuration is placed in
+   ``/etc/cdap/conf.dist``. The ``cdap-site.xml`` file is a placeholder
+   where you can define your specific configuration for all CDAP components.
+   The ``cdap-site.xml.example`` file shows the properties that usually require customization
+   for all installations.
+ 
+   .. _distribution-configuration-alternatives:
+ 
+   Similar to Hadoop, CDAP utilizes the ``alternatives`` framework to allow you to
+   easily switch between multiple configurations. The ``alternatives`` system is used for ease of
+   management and allows you to to choose between different directories to fulfill the
+   same purpose.
+ 
+   Simply copy the contents of ``/etc/cdap/conf.dist`` into a directory of your choice
+   (such as ``/etc/cdap/conf.mycdap``) and make all of your customizations there.
+   Then run the ``alternatives`` command to point the ``/etc/cdap/conf`` symlink
+   to your custom directory.
+ 
+   .. _distribution-configuration-options:
 
 #. Configure the ``cdap-site.xml`` after you have installed the CDAP packages.
 

@@ -44,7 +44,7 @@ the CDAP installation and its security configuration.
 .. |sdk| replace:: **CDAP Standalone SDK:**
 .. _sdk: ../developers-manual/getting-started/standalone/index.html
 
-- |sdk|_ Installing the CDAP Standalone SDK on Linux, MacOS, and Windows systems.
+- |sdk|_ Installing the CDAP Standalone SDK on Linux, MacOS, and Windows systems. *(Developers' Manual)*
 
 
 .. rubric:: Security

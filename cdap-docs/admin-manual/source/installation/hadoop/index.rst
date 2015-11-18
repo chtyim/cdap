@@ -26,7 +26,7 @@ For other distributions, managers, or formats:
 - For Cloudera Manager, follow :ref:`these instructions <cloudera-index>`.
 - For Apache Ambari, follow :ref:`these instructions <ambari-index>`.
 - For MapR, follow :ref:`these instructions <mapr-index>`.
-- For the CDAP Standalone SDK, follow :ref:`these instructions <standalone-index>`.
+- For the CDAP Standalone SDK, follow :ref:`these instructions <standalone-index>`. *(Developers' Manual)*
 
 These instructions cover the steps to install CDAP on Hadoop systems:
 

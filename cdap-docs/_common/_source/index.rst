@@ -91,7 +91,8 @@ on the installation, monitoring and diagnosing fully distributed CDAP in a Hadoo
   - **Security:** CDAP supports securing clusters using a perimeter security model
   - **Operations:** Logging, metrics, monitoring, runtime arguments, scaling instances, resource
     guarantees, transaction service maintenance, troubleshooting and introduces the CDAP UI
-
+  - **Troubleshooting and Appendices:** Installation and configuration troubleshooting
+    tips, and appendices that cover the CDAP installation and security configuration files
 
 .. |integrations| replace:: **Integrations:**
 .. _integrations: integrations/index.html

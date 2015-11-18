@@ -26,7 +26,7 @@ For other distributions, managers, or formats:
 - For Apache Ambari, follow :ref:`these instructions <ambari-index>`.
 - For generic Apache Hadoop distributions, CDH clusters *not* managed with
   Cloudera Manager, or HDP clusters *not* managed with Ambari, follow :ref:`these instructions <hadoop-index>`.
-- For the CDAP Standalone SDK, follow :ref:`these instructions <standalone-index>`.
+- For the CDAP Standalone SDK, follow :ref:`these instructions <standalone-index>`. *(Developers' Manual)*
 
 These instructions cover the steps to install CDAP on MapR systems:
 

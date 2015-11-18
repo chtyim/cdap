@@ -28,7 +28,7 @@ For other distributions, managers, or formats:
 - For generic Apache Hadoop distributions, CDH clusters *not* managed with
   Cloudera Manager, or HDP clusters *not* managed with Ambari, follow :ref:`these instructions <hadoop-index>`.
 - For MapR, follow :ref:`these instructions <mapr-index>`.
-- For the CDAP Standalone SDK, follow :ref:`these instructions <standalone-index>`.
+- For the CDAP Standalone SDK, follow :ref:`these instructions <standalone-index>`. *(Developers' Manual)*
 
 You can use Ambari to integrate CDAP into a Hadoop cluster
 by adding the `CDAP Ambari Services <https://github.com/caskdata/cdap-ambari-service>`__
