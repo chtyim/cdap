@@ -20,7 +20,7 @@ Integrations
 .. |cloudera-install| replace:: **Configuring and Installing:**
 .. _cloudera-install: ../admin-manual/installation/cloudera/index.html
 
-- |cloudera-install|_ Configuring and installing CDAP using Cloudera Manager
+- |cloudera-install|_ Configuring and installing CDAP using **Cloudera Manager** *(Administration Manual)*
 
 
 .. |cloudera-ingesting| replace:: **Ingestion and Exploration:**
@@ -33,6 +33,22 @@ Integrations
 .. _cloudera-faq: partners/cloudera/faq.html
 
 .. - |cloudera-faq|_ for Cloudera and Impala
+
+
+.. rubric:: Ambari
+
+.. |ambari| replace:: **Configuring and Installing:**
+.. _ambari: ../admin-manual/installation/ambari/index.html
+
+- |ambari|_ Configuring and installing CDAP using **Ambari** *(Administration Manual)*
+
+
+.. rubric:: MapR
+
+.. |mapr| replace:: **Configuring and Installing:**
+.. _mapr: ../admin-manual/installation/mapr/index.html
+
+- |mapr|_ Configuring and installing CDAP on **MapR** *(Administration Manual)*
 
 
 .. rubric:: BI Tools: Accessing CDAP Datasets through Business Intelligence Tools
@@ -57,13 +73,13 @@ The example :ref:`cdap-bi-guide` includes the use of Pentaho.
 .. |pentaho| replace:: **Pentaho Data Integration:**
 .. _pentaho: pentaho.html
 
-- |pentaho|_ An advanced, open source business intelligence tool that can execute
+- |pentaho|_ An advanced, open source **business intelligence tool** that can execute
   transformations of data.
 
 
 .. |squirrel| replace:: **SquirrelSQL:**
 .. _squirrel: squirrel.html
 
-- |squirrel|_ A simple JDBC client which executes SQL queries against many different relational databases.
+- |squirrel|_ A simple JDBC client which **executes SQL queries** against many different relational databases.
 
 

@@ -6,14 +6,16 @@
 
 .. _cloudera-index:
 
-==================================================
+========
 Cloudera
-==================================================
+========
+
+Overview
+========
 
 .. toctree::
    :maxdepth: 1
    
-    Configuring and Installing </../../../admin-manual/installation/cloudera/index.html>
     Ingestion and Exploration <ingesting>
 
 .. include:: /_includes/cloudera-certified.rst
@@ -47,7 +49,7 @@ results.
 .. |cloudera-install| replace:: **Configuring and Installing:**
 .. _cloudera-install: ../../../admin-manual/installation/cloudera/index.html
 
-- |cloudera-install|_ Configuring and installing CDAP using Cloudera Manager
+- |cloudera-install|_ Configuring and installing CDAP using **Cloudera Manager** *(Administration Manual)*
 
 .. |cloudera-ingesting| replace:: **Ingesting and Exploration:**
 .. _cloudera-ingesting: ingesting.html
