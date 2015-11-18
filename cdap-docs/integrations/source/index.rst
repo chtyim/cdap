@@ -17,16 +17,10 @@ Integrations
 - |cloudera-introduction|_ Utilizing CDAP on **Cloudera Enterprise Data Hub**
 
 
-.. |cloudera-configuring| replace:: **Configuring and Installing:**
-.. _cloudera-configuring: partners/cloudera/configuring.html
+.. |cloudera-install| replace:: **Configuring and Installing:**
+.. _cloudera-install: ../admin-manual/installation/cloudera/index.html
 
-- |cloudera-configuring|_ Configuring and installing CDAP using Cloudera Manager
-
-
-.. |cloudera-add-service| replace:: **Add Service Wizard:**
-.. _cloudera-add-service: partners/cloudera/step-by-step-cloudera.html
-
-- |cloudera-add-service|_ A **step-by-step guide** to installing CDAP using the Cloudera Manager *Add Service* Wizard
+- |cloudera-install|_ Configuring and installing CDAP using Cloudera Manager
 
 
 .. |cloudera-ingesting| replace:: **Ingestion and Exploration:**
@@ -39,22 +33,6 @@ Integrations
 .. _cloudera-faq: partners/cloudera/faq.html
 
 .. - |cloudera-faq|_ for Cloudera and Impala
-
-
-.. rubric:: Ambari
-
-.. |ambari| replace:: **Configuring and Installing:**
-.. _ambari: ambari/index.html
-
-- |ambari|_ Configuring and installing CDAP using **Ambari**
-
-
-.. rubric:: MapR
-
-.. |mapr| replace:: **Configuring and Installing:**
-.. _mapr: mapr/index.html
-
-- |mapr|_ Configuring and installing CDAP on **MapR**
 
 
 .. rubric:: BI Tools: Accessing CDAP Datasets through Business Intelligence Tools
