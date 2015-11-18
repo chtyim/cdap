@@ -118,14 +118,14 @@ You'll need this software installed:
 - CDAP nodes require Hadoop and HBase client installation and configuration. 
   **Note:** No Hadoop services need to be running.
 
-.. highlight:: console
-
 .. _distribution-install-java-runtime:
 
 Java Runtime
 ++++++++++++
 The latest `JDK or JRE version 1.7.xx or 1.8.xx <http://www.java.com/en/download/manual.jsp>`__
 for Linux, Windows, or Mac OS X must be installed in your environment; we recommend the Oracle JDK.
+
+.. highlight:: console
 
 To check the Java version installed, run the command::
 

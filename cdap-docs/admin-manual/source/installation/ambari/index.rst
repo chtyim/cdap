@@ -6,9 +6,9 @@
 
 .. _ambari-index:
 
-============
-Ambari (HDP)
-============
+===================
+Apache Ambari (HDP)
+===================
 
 .. toctree::
 

@@ -18,7 +18,9 @@ MapR
     Upgrading CDAP <upgrading>
 
 This section is to help you install the Cask Data Application Platform (CDAP) on
-`MapR systems <https://www.mapr.com>`__. For other distributions, managers, or formats:
+`MapR systems <https://www.mapr.com>`__.
+
+For other distributions, managers, or formats:
 
 - For Cloudera Manager, follow :ref:`these instructions <cloudera-index>`.
 - For Apache Ambari, follow :ref:`these instructions <ambari-index>`.
