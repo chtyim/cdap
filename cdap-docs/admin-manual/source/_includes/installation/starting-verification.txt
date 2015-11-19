@@ -66,14 +66,14 @@ We provide in our SDK pre-built ``.JAR`` files for convenience.
 #. Extract to a folder (``CDAP_HOME``).
 #. Open a command prompt and navigate to ``CDAP_HOME/examples``.
 #. Each example folder has a ``.jar`` file in its ``target`` directory.
-   For verification, we will use the ``WordCount`` example.
+   For verification, we will use the :ref:`WordCount example <examples-word-count>`.
 #. Open a web browser to the CDAP UI.
    It is located on port ``9999`` of the box where you installed CDAP.
 #. On the UI, click the button *Add App*.
 #. Find the pre-built ``WordCount-``\ |literal-release|\ ``.jar`` using the dialog box to navigate to
    ``CDAP_HOME/examples/WordCount/target/``. 
 #. Once the application is deployed, instructions on running the example can be found at the
-   :ref:`WordCount example. <examples-word-count>`
+   :ref:`WordCount example <examples-word-count>`.
 #. You should be able to start the application, inject sentences, and retrieve results.
 #. When finished, you can stop and remove the application as described in the section on
    :ref:`cdap-building-running`.
