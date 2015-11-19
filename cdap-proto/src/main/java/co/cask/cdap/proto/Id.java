@@ -198,7 +198,7 @@ public abstract class Id implements EntityIdCompatible {
     private final String id;
 
     public Namespace(String id) {
-      Preconditions.checkNotNull(id, "Namespace '" + id + "' cannot be null.");
+      Preconditions.checkArgument(id != null, "Namespace id cannot be null.");
       Preconditions.checkArgument(isValidNamespaceId(id), "Namespace '" + id + "' has an incorrect format.");
       this.id = id;
     }
