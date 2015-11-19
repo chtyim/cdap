@@ -57,7 +57,6 @@ Setup and Startup using the Cloudera Manager
 Complete instructions, step-by-step, for using the Admin Console *Add Service* Wizard to install CDAP
 :ref:`are available <step-by-step-cloudera-add-service>`.
 
-
 Run the Cloudera Manager Admin Console *Add Service* Wizard and select *CDAP*.
 When completing the Wizard, these notes may help:
 
@@ -76,9 +75,14 @@ When completing the Wizard, these notes may help:
 - *Add Service* Wizard, Pages 4 & 5: **Router Server Port:** This should match the "Router Bind
   Port"; it’s used by the CDAP UI to connect to the Router service.
 
-- *Add Service* Wizard, Page 4 & 5: **App Artifact Dir:** This should initially point to the bundled system artifacts included in
-  the CDAP parcel directory. If you have modified ``${PARCELS_ROOT}``, please update this setting to match.
-  Users will want to customize this directory to a location outside of the CDAP Parcel.
+- *Add Service* Wizard, Page 4 & 5: **App Artifact Dir:** This should initially point to the
+  bundled system artifacts included in the CDAP parcel directory. If you have modified
+  ``${PARCELS_ROOT}``, please update this setting to match. Users will want to customize
+  this directory to a location outside of the CDAP Parcel.
+
+- **Additional CDAP configuration properties** can be added using the Cloudera Manager's 
+  *Safety Valve* Advanced Configuration Snippets. Documentation of the available CDAP
+  properties is in the :ref:`appendix-cdap-site.xml`.
 
 Once you have completed the installation and :ref:`started CDAP <step-by-step-cloudera-add-service-startup>`, you can then 
 :ref:`verify the installation <cloudera-verification>`.

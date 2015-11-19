@@ -100,7 +100,7 @@ Installing CDAP
  
       **Ambari Dashboard:** Enabling *CDAP Explore*
 
-   For a complete explanation of these options, refer to the :ref:`CDAP documentation on
+   For a **complete explanation of these options,** refer to the :ref:`CDAP documentation of
    cdap-site.xml <appendix-cdap-site.xml>`. After making any configuration changes, click
    *Next*.
 
