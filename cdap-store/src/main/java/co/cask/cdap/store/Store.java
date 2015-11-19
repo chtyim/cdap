@@ -14,7 +14,7 @@
  * the License.
  */
 
-package co.cask.cdap.app.store;
+package co.cask.cdap.store;
 
 import co.cask.cdap.api.ProgramSpecification;
 import co.cask.cdap.api.app.ApplicationSpecification;
@@ -23,17 +23,16 @@ import co.cask.cdap.api.flow.FlowSpecification;
 import co.cask.cdap.api.schedule.ScheduleSpecification;
 import co.cask.cdap.api.worker.Worker;
 import co.cask.cdap.api.workflow.WorkflowToken;
-import co.cask.cdap.app.program.Program;
 import co.cask.cdap.common.ApplicationNotFoundException;
 import co.cask.cdap.common.ProgramNotFoundException;
 import co.cask.cdap.internal.app.store.RunRecordMeta;
-import co.cask.cdap.internal.app.store.WorkflowDataset;
 import co.cask.cdap.proto.AdapterStatus;
 import co.cask.cdap.proto.Id;
 import co.cask.cdap.proto.NamespaceMeta;
 import co.cask.cdap.proto.ProgramRunStatus;
 import co.cask.cdap.proto.WorkflowStatistics;
-import co.cask.cdap.templates.AdapterDefinition;
+import co.cask.cdap.proto.program.Program;
+import co.cask.cdap.proto.templates.AdapterDefinition;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Predicate;
 import org.apache.twill.api.RunId;

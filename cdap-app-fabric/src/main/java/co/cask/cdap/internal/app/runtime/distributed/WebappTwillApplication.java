@@ -15,7 +15,7 @@
  */
 package co.cask.cdap.internal.app.runtime.distributed;
 
-import co.cask.cdap.app.program.Program;
+import co.cask.cdap.proto.program.Program;
 import co.cask.cdap.internal.app.runtime.webapp.WebappProgramRunner;
 import co.cask.cdap.proto.ProgramType;
 import com.google.common.base.Throwables;

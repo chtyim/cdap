@@ -18,7 +18,7 @@ package co.cask.cdap.internal.app.runtime.distributed;
 
 import co.cask.cdap.api.service.Service;
 import co.cask.cdap.api.service.ServiceSpecification;
-import co.cask.cdap.app.program.Program;
+import co.cask.cdap.proto.program.Program;
 import co.cask.cdap.proto.ProgramType;
 import org.apache.twill.api.EventHandler;
 import org.apache.twill.api.TwillApplication;

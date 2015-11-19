@@ -24,7 +24,7 @@ import co.cask.cdap.common.io.Locations;
 import co.cask.cdap.common.namespace.DefaultNamespacedLocationFactory;
 import co.cask.cdap.common.namespace.NamespacedLocationFactory;
 import co.cask.cdap.internal.DefaultId;
-import co.cask.cdap.internal.app.ApplicationSpecificationAdapter;
+import co.cask.cdap.proto.program.ApplicationSpecificationAdapter;
 import co.cask.cdap.internal.app.Specifications;
 import co.cask.cdap.internal.io.ReflectionSchemaGenerator;
 import co.cask.cdap.internal.pipeline.StageContext;

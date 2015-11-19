@@ -26,7 +26,7 @@ import co.cask.cdap.api.workflow.WorkflowActionNode;
 import co.cask.cdap.api.workflow.WorkflowNode;
 import co.cask.cdap.api.workflow.WorkflowNodeType;
 import co.cask.cdap.api.workflow.WorkflowSpecification;
-import co.cask.cdap.app.program.Program;
+import co.cask.cdap.proto.program.Program;
 import co.cask.cdap.app.runtime.ProgramController;
 import co.cask.cdap.app.runtime.ProgramOptions;
 import co.cask.cdap.app.runtime.ProgramRunner;
@@ -94,7 +94,7 @@ public final class DistributedWorkflowProgramRunner extends AbstractDistributedP
       localizeResources.put(sparkAssemblyJar.getName(), new LocalizeResource(sparkAssemblyJar));
       extraClassPaths.add(sparkAssemblyJar.getName());
     }
-    
+
     // Add classpaths for MR framework
     extraClassPaths.addAll(MapReduceContainerHelper.localizeFramework(hConf, localizeResources));
 

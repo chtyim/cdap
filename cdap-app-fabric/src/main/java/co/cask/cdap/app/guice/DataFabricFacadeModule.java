@@ -16,7 +16,7 @@
 package co.cask.cdap.app.guice;
 
 import co.cask.cdap.api.data.DatasetContext;
-import co.cask.cdap.app.program.Program;
+import co.cask.cdap.proto.program.Program;
 import co.cask.cdap.common.queue.QueueName;
 import co.cask.cdap.data2.dataset2.DynamicDatasetCache;
 import co.cask.cdap.data2.metadata.lineage.AccessType;

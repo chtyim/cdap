@@ -16,7 +16,7 @@
 package co.cask.cdap.internal.app.runtime.distributed;
 
 import co.cask.cdap.api.flow.FlowSpecification;
-import co.cask.cdap.internal.app.ApplicationSpecificationAdapter;
+import co.cask.cdap.proto.program.ApplicationSpecificationAdapter;
 import co.cask.cdap.internal.app.runtime.ProgramOptionConstants;
 import co.cask.cdap.proto.Id;
 import com.google.gson.Gson;

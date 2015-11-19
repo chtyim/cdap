@@ -14,7 +14,7 @@
  * the License.
  */
 
-package co.cask.cdap.templates;
+package co.cask.cdap.proto.templates;
 
 /**
  * Contains plugin information.

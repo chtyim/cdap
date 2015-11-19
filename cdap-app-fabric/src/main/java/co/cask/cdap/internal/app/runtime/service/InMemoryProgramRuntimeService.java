@@ -16,7 +16,7 @@
 
 package co.cask.cdap.internal.app.runtime.service;
 
-import co.cask.cdap.app.program.Program;
+import co.cask.cdap.proto.program.Program;
 import co.cask.cdap.app.program.Programs;
 import co.cask.cdap.app.runtime.AbstractProgramRuntimeService;
 import co.cask.cdap.app.runtime.ProgramController;

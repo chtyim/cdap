@@ -16,7 +16,7 @@
 
 package co.cask.cdap.app.runtime;
 
-import co.cask.cdap.app.program.Program;
+import co.cask.cdap.proto.program.Program;
 
 /**
  *

@@ -16,7 +16,7 @@
 
 package co.cask.cdap.internal.app.runtime;
 
-import co.cask.cdap.app.program.Program;
+import co.cask.cdap.proto.program.Program;
 import co.cask.cdap.app.runtime.Arguments;
 import co.cask.cdap.app.runtime.ProgramOptions;
 

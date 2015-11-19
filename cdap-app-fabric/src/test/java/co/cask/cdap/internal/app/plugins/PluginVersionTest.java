@@ -16,7 +16,7 @@
 
 package co.cask.cdap.internal.app.plugins;
 
-import co.cask.cdap.templates.PluginVersion;
+import co.cask.cdap.proto.templates.PluginVersion;
 import org.junit.Assert;
 import org.junit.Test;
 

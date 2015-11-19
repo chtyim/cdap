@@ -49,7 +49,7 @@ import co.cask.cdap.api.service.ServiceSpecification;
 import co.cask.cdap.api.workflow.ScheduleProgramInfo;
 import co.cask.cdap.app.DefaultAppConfigurer;
 import co.cask.cdap.app.DefaultApplicationContext;
-import co.cask.cdap.app.program.Program;
+import co.cask.cdap.proto.program.Program;
 import co.cask.cdap.app.runtime.ProgramController;
 import co.cask.cdap.common.app.RunIds;
 import co.cask.cdap.common.namespace.NamespaceAdmin;
@@ -61,7 +61,7 @@ import co.cask.cdap.proto.Id;
 import co.cask.cdap.proto.NamespaceMeta;
 import co.cask.cdap.proto.ProgramRunStatus;
 import co.cask.cdap.proto.ProgramType;
-import co.cask.cdap.templates.AdapterDefinition;
+import co.cask.cdap.proto.templates.AdapterDefinition;
 import com.google.common.base.Function;
 import com.google.common.base.Objects;
 import com.google.common.base.Throwables;
@@ -1070,7 +1070,7 @@ public class DefaultStoreTest {
                                            runningPrograms.subSet(1000L, 45 * 10000L))),
                         runIdsToTime(store.getRunningInRange(1, 45 * 10)));
   }
-  
+
   private void writeStartRecord(Id.Run run) {
     store.setStart(run.getProgram(), run.getId(), RunIds.getTime(RunIds.fromString(run.getId()), TimeUnit.SECONDS));
     Assert.assertNotNull(store.getRun(run.getProgram(), run.getId()));

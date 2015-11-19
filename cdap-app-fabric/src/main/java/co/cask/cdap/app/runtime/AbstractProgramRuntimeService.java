@@ -17,7 +17,7 @@ package co.cask.cdap.app.runtime;
 
 import co.cask.cdap.api.app.ApplicationSpecification;
 import co.cask.cdap.api.plugin.Plugin;
-import co.cask.cdap.app.program.Program;
+import co.cask.cdap.proto.program.Program;
 import co.cask.cdap.common.ArtifactNotFoundException;
 import co.cask.cdap.common.app.RunIds;
 import co.cask.cdap.common.conf.CConfiguration;

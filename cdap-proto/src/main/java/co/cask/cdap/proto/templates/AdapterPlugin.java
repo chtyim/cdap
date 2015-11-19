@@ -14,7 +14,7 @@
  * the License.
  */
 
-package co.cask.cdap.templates;
+package co.cask.cdap.proto.templates;
 
 import co.cask.cdap.api.plugin.PluginClass;
 import co.cask.cdap.api.plugin.PluginProperties;

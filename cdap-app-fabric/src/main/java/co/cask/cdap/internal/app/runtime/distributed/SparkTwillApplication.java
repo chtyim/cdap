@@ -19,7 +19,7 @@ package co.cask.cdap.internal.app.runtime.distributed;
 import co.cask.cdap.api.Resources;
 import co.cask.cdap.api.spark.Spark;
 import co.cask.cdap.api.spark.SparkSpecification;
-import co.cask.cdap.app.program.Program;
+import co.cask.cdap.proto.program.Program;
 import co.cask.cdap.proto.ProgramType;
 import com.google.common.base.Objects;
 import org.apache.twill.api.EventHandler;

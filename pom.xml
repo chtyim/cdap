@@ -2247,6 +2247,7 @@
         <module>cdap-docs-gen</module>
         <module>cdap-watchdog-api</module>
         <module>cdap-kafka</module>
+        <module>cdap-store</module>
         <module>cdap-data-fabric</module>
         <module>cdap-watchdog</module>
         <module>cdap-app-fabric</module>

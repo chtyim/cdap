@@ -14,7 +14,7 @@
  * the License.
  */
 
-package co.cask.cdap.templates;
+package co.cask.cdap.proto.templates;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

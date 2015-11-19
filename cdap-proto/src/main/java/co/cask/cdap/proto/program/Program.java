@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package co.cask.cdap.app.program;
+package co.cask.cdap.proto.program;
 
 import co.cask.cdap.api.app.ApplicationSpecification;
 import co.cask.cdap.proto.Id;

@@ -14,10 +14,10 @@
  * the License.
  */
 
-package co.cask.cdap.internal.app.store;
+package co.cask.cdap.store;
 
 import co.cask.cdap.proto.AdapterStatus;
-import co.cask.cdap.templates.AdapterDefinition;
+import co.cask.cdap.proto.templates.AdapterDefinition;
 
 /**
  * Holds adapter metadata

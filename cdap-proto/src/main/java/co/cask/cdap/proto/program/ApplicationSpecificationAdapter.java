@@ -14,7 +14,7 @@
  * the License.
  */
 
-package co.cask.cdap.internal.app;
+package co.cask.cdap.proto.program;
 
 import co.cask.cdap.api.app.ApplicationSpecification;
 import co.cask.cdap.api.data.schema.Schema;

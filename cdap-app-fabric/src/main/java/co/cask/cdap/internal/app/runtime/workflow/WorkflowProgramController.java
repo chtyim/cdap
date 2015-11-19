@@ -15,7 +15,7 @@
  */
 package co.cask.cdap.internal.app.runtime.workflow;
 
-import co.cask.cdap.app.program.Program;
+import co.cask.cdap.proto.program.Program;
 import co.cask.cdap.internal.app.runtime.AbstractProgramController;
 import com.google.common.util.concurrent.Service;
 import org.apache.twill.api.RunId;
@@ -67,7 +67,7 @@ final class WorkflowProgramController extends AbstractProgramController {
   protected void doCommand(String name, Object value) throws Exception {
     LOG.info("Command ignored {}, {}", name, value);
   }
-  
+
   private void startListen(Service service) {
     // Forward state changes from the given service to this controller.
     service.addListener(new ServiceListenerAdapter() {

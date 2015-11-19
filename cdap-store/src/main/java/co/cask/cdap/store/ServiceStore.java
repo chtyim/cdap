@@ -14,7 +14,7 @@
  * the License.
  */
 
-package co.cask.cdap.app.store;
+package co.cask.cdap.store;
 
 import co.cask.cdap.proto.RestartServiceInstancesStatus;
 import com.google.common.util.concurrent.Service;
