@@ -52,14 +52,17 @@ Configuration
       :language: xml
       :lines: 18-
 
-   - Check that the ``router.server.address`` property in ``conf/cdap-site.xml`` is set to the
-     **hostname of the CDAP Router**. The CDAP UI uses this property to connect to the Router::
+   .. highlight:: xml
 
-         <property>
-           <name>router.server.address</name>
-           <value>{router-host-name}</value>
-         </property>
-         
+#. Check that the ``router.server.address`` property in ``conf/cdap-site.xml`` is set to the
+   **hostname of the CDAP Router**. The CDAP UI uses this property to connect to the Router::
+
+     <property>
+       <name>router.server.address</name>
+       <value>{router-host-name}</value>
+       <description>Router address to which CDAP UI connects</description>
+     </property>
+
 #. Depending on your installation, you may want to set these properties:
 
    .. highlight:: xml
