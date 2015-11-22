@@ -32,6 +32,8 @@ import co.cask.cdap.common.conf.Constants;
 import co.cask.cdap.common.io.Locations;
 import co.cask.cdap.common.utils.DirUtils;
 import co.cask.cdap.common.utils.ImmutablePair;
+import co.cask.cdap.data2.metadata.store.MetadataStore;
+import co.cask.cdap.data2.metadata.system.ArtifactSystemMetadataWriter;
 import co.cask.cdap.internal.app.runtime.plugin.PluginNotExistsException;
 import co.cask.cdap.proto.Id;
 import co.cask.cdap.proto.artifact.ApplicationClassInfo;
@@ -73,9 +75,10 @@ public class ArtifactRepository {
   private final ArtifactInspector artifactInspector;
   private final List<File> systemArtifactDirs;
   private final ArtifactConfigReader configReader;
+  private final MetadataStore metadataStore;
 
   @Inject
-  ArtifactRepository(CConfiguration cConf, ArtifactStore artifactStore) {
+  ArtifactRepository(CConfiguration cConf, ArtifactStore artifactStore, MetadataStore metadataStore) {
     this.artifactStore = artifactStore;
     File baseUnpackDir = new File(cConf.get(Constants.CFG_LOCAL_DATA_DIR),
       cConf.get(Constants.AppFabric.TEMP_DIR)).getAbsoluteFile();
@@ -91,6 +94,7 @@ public class ArtifactRepository {
       systemArtifactDirs.add(file);
     }
     this.configReader = new ArtifactConfigReader();
+    this.metadataStore = metadataStore;
   }
 
   /**
@@ -386,6 +390,10 @@ public class ArtifactRepository {
     try {
       ArtifactClasses artifactClasses = inspectArtifact(artifactId, artifactFile, additionalPlugins, parentClassLoader);
       ArtifactMeta meta = new ArtifactMeta(artifactClasses, parentArtifacts, properties);
+      // add system metadata for artifacts
+      ArtifactSystemMetadataWriter writer = new ArtifactSystemMetadataWriter(metadataStore, artifactId,
+                                                                             additionalPlugins);
+      writer.write();
       return artifactStore.write(artifactId, meta, Files.newInputStreamSupplier(artifactFile));
     } finally {
       parentClassLoader.close();

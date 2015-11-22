@@ -54,7 +54,7 @@ public class MetadataDataset extends AbstractDataset {
     .registerTypeAdapter(Id.NamespacedId.class, new NamespacedIdCodec())
     .create();
 
-  private static final Pattern VALUE_SPLIT_PATTERN = Pattern.compile("\\s*[-_,\\s]\\s*");
+  private static final Pattern VALUE_SPLIT_PATTERN = Pattern.compile("\\s*[-_,:\\s]\\s*");
 
   private static final String HISTORY_COLUMN = "h"; // column for metadata history
   private static final String VALUE_COLUMN = "vc";  // column for metadata value

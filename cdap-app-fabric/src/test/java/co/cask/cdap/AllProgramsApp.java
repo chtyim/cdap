@@ -16,7 +16,11 @@
 
 package co.cask.cdap;
 
+import co.cask.cdap.api.ProgramLifecycle;
 import co.cask.cdap.api.TxRunnable;
+import co.cask.cdap.api.annotation.Description;
+import co.cask.cdap.api.annotation.Name;
+import co.cask.cdap.api.annotation.Plugin;
 import co.cask.cdap.api.annotation.ProcessInput;
 import co.cask.cdap.api.annotation.UseDataSet;
 import co.cask.cdap.api.app.AbstractApplication;
@@ -29,6 +33,8 @@ import co.cask.cdap.api.flow.flowlet.AbstractFlowlet;
 import co.cask.cdap.api.flow.flowlet.StreamEvent;
 import co.cask.cdap.api.mapreduce.AbstractMapReduce;
 import co.cask.cdap.api.mapreduce.MapReduceContext;
+import co.cask.cdap.api.plugin.PluginConfig;
+import co.cask.cdap.api.plugin.PluginProperties;
 import co.cask.cdap.api.service.AbstractService;
 import co.cask.cdap.api.service.http.AbstractHttpServiceHandler;
 import co.cask.cdap.api.service.http.HttpServiceRequest;
@@ -47,6 +53,7 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.spark.api.java.JavaPairRDD;
+import org.junit.Assert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,6 +75,10 @@ public class AllProgramsApp extends AbstractApplication {
   public static final String NAME = "App";
   public static final String STREAM_NAME = "stream";
   public static final String DATASET_NAME = "kvt";
+  public static final String PLUGIN_DESCRIPTION = "test plugin";
+  public static final String PLUGIN_NAME = "mydoubler";
+  public static final String PLUGIN_TYPE = "doubler";
+
 
   @Override
   public void configure() {
@@ -91,7 +102,7 @@ public class AllProgramsApp extends AbstractApplication {
     public static final String NAME = "NoOpFlow";
 
     @Override
-    protected void configureFlow() {
+    protected void configure() {
       setName(NAME);
       setDescription("NoOpflow");
       addFlowlet(A.NAME, new A());
@@ -141,12 +152,24 @@ public class AllProgramsApp extends AbstractApplication {
     }
   }
 
-  public static class NoOpMapper extends Mapper<LongWritable, BytesWritable, Text, Text> {
+  public static class NoOpMapper extends Mapper<LongWritable, BytesWritable, Text, Text>
+    implements ProgramLifecycle<MapReduceContext> {
     @Override
     protected void map(LongWritable key, BytesWritable value,
                        Context context) throws IOException, InterruptedException {
       Text output = new Text(value.copyBytes());
       context.write(output, output);
+    }
+
+    @Override
+    public void initialize(MapReduceContext context) throws Exception {
+      Object obj = context.newPluginInstance("mrid");
+      Assert.assertEquals("value", obj.toString());
+    }
+
+    @Override
+    public void destroy() {
+
     }
   }
 
@@ -285,6 +308,21 @@ public class AllProgramsApp extends AbstractApplication {
         table.write("no-op-service", "no-op-service");
         responder.sendStatus(200);
       }
+    }
+  }
+
+  public static class PConfig extends PluginConfig {
+    private double y;
+  }
+
+  @Plugin(type = PLUGIN_TYPE)
+  @Name(PLUGIN_NAME)
+  @Description(PLUGIN_DESCRIPTION)
+  public static class AppPlugin {
+    private PConfig pluginConf;
+
+    public double doSomething() {
+      return pluginConf.y;
     }
   }
 }
