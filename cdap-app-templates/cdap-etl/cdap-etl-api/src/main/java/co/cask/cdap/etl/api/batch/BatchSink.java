@@ -39,7 +39,7 @@ import co.cask.cdap.etl.api.Transformation;
 public abstract class BatchSink<IN, KEY_OUT, VAL_OUT> extends BatchConfigurable<BatchSinkContext>
   implements Transformation<IN, KeyValue<KEY_OUT, VAL_OUT>>, StageLifecycle<BatchRuntimeContext> {
 
-  String stageName;
+  private String stageName;
   /**
    * Initialize the Batch Sink stage. Executed inside the Batch Run. This method is guaranteed to be invoked
    * before any calls to {@link BatchSink#transform} are made.
@@ -65,6 +65,14 @@ public abstract class BatchSink<IN, KEY_OUT, VAL_OUT> extends BatchConfigurable<
   @Override
   public void transform(IN input, Emitter<KeyValue<KEY_OUT, VAL_OUT>> emitter) throws Exception {
     emitter.emit(stageName, new KeyValue<>((KEY_OUT) input, (VAL_OUT) input));
+  }
+
+  /**
+   * Returns the stageName associated, only used by sub-class for emitting to a stage.
+   * @return
+   */
+  protected String getStageName() {
+    return stageName;
   }
 
   /**

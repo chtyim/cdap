@@ -43,11 +43,19 @@ public class DBSinkTest {
     config.columns = "ts,body";
     config.tableName = "foo";
 
+    // this is a bit hacky, but didn't want to make the signature for Sink getStageName public for the purpose of tests.
+    final String stageName = "dbSinkStage";
+
     DBSink sink = new DBSink(config) {
       @Override
       public List<String> getColumns() {
         return ImmutableList.copyOf(Splitter.on(",").split(config.columns));
       }
+
+      public String getStageName() {
+        return stageName;
+      }
+
     };
 
     StructuredRecord input = StructuredRecord
@@ -62,10 +70,11 @@ public class DBSinkTest {
     MockEmitter<KeyValue<DBRecord, NullWritable>> emitter = new MockEmitter<>();
     sink.transform(input, emitter);
 
-    Assert.assertEquals(1, emitter.getEmitted().size());
+
+    Assert.assertEquals(1, emitter.getEmitted(stageName).size());
     Assert.assertEquals(
       getRecordFields(input),
-      getRecordFields(emitter.getEmitted().get(0).getKey().getRecord()));
+      getRecordFields(emitter.getEmitted(stageName).get(0).getKey().getRecord()));
   }
 
   @Test
@@ -74,10 +83,17 @@ public class DBSinkTest {
     config.columns = "body,ts";
     config.tableName = "foo";
 
+    // this is a bit hacky, but didn't want to make the signature for Sink getStageName public for the purpose of tests.
+    final String stageName = "dbSinkStage";
+
     DBSink sink = new DBSink(config) {
       @Override
       public List<String> getColumns() {
         return ImmutableList.copyOf(Splitter.on(",").split(config.columns));
+      }
+
+      public String getStageName() {
+        return stageName;
       }
     };
 
@@ -104,10 +120,10 @@ public class DBSinkTest {
     MockEmitter<KeyValue<DBRecord, NullWritable>> emitter = new MockEmitter<>();
     sink.transform(input, emitter);
 
-    Assert.assertEquals(1, emitter.getEmitted().size());
+    Assert.assertEquals(1, emitter.getEmitted(stageName).size());
     Assert.assertEquals(
       getRecordFields(output),
-      getRecordFields(emitter.getEmitted().get(0).getKey().getRecord()));
+      getRecordFields(emitter.getEmitted(stageName).get(0).getKey().getRecord()));
   }
 
   @Test

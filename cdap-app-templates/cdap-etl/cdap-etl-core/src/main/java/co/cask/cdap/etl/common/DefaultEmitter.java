@@ -16,6 +16,7 @@
 
 package co.cask.cdap.etl.common;
 
+import co.cask.cdap.api.metrics.Metrics;
 import co.cask.cdap.etl.api.Emitter;
 import co.cask.cdap.etl.api.InvalidEntry;
 import co.cask.cdap.etl.api.StageMetrics;
@@ -33,9 +34,9 @@ import java.util.Map;
 public class DefaultEmitter<T> implements Emitter<T> {
   private final Map<String, List<T>> entriesMap;
   private final Map<String, List<InvalidEntry<T>>> errorMap;
-  private final StageMetrics metrics;
+  private final Metrics metrics;
 
-  public DefaultEmitter(StageMetrics metrics) {
+  public DefaultEmitter(Metrics metrics) {
     this.entriesMap = new HashMap<>();
     this.errorMap = new HashMap<>();
     this.metrics = metrics;
@@ -57,6 +58,10 @@ public class DefaultEmitter<T> implements Emitter<T> {
     }
     errorMap.get(stageName).add(value);
     metrics.count(stageName + ".records.errors", 1);
+  }
+
+  public List<T> getEntries(String stageName) {
+    return entriesMap.get(stageName);
   }
 
   public Map<String, List<T>> getEntriesMap() {

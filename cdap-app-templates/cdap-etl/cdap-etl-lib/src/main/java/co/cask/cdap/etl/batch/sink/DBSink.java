@@ -117,7 +117,8 @@ public class DBSink extends BatchSink<StructuredRecord, DBRecord, NullWritable> 
       output.set(column, input.get(column));
     }
 
-    emitter.emit(new KeyValue<DBRecord, NullWritable>(new DBRecord(output.build(), columnTypes), null));
+    emitter.emit(super.getStageName(),
+                 new KeyValue<DBRecord, NullWritable>(new DBRecord(output.build(), columnTypes), null));
   }
 
   @Override

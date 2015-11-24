@@ -16,40 +16,40 @@
 
 package co.cask.cdap.etl.common;
 
-import co.cask.cdap.etl.api.StageMetrics;
+import co.cask.cdap.api.metrics.Metrics;
 import co.cask.cdap.etl.api.Transformation;
+
+import java.util.Map;
 
 /**
  * Class that encapsulates {@link co.cask.cdap.etl.api.Transform} and transformId
- * and {@link DefaultStageMetrics} and boolean to indicate if the transform is sink.
+ * and {@link Metrics}
  */
 public class TransformDetail {
 
-  private final String transformId;
-  private final Transformation transformation;
-  private final StageMetrics metrics;
+  private final Map<String, Transformation> transformationMap;
+  private final Metrics metrics;
 
-  public TransformDetail(String transformId, Transformation transform, StageMetrics metrics) {
-    this.transformation = transform;
-    this.transformId = transformId;
+  public TransformDetail(Map<String, Transformation> transformationMap, Metrics metrics) {
+    this.transformationMap = transformationMap;
     this.metrics = metrics;
   }
 
-  public TransformDetail(TransformDetail transformDetail, Transformation transformation) {
-    this.transformation = transformation;
-    this.transformId = transformDetail.getTransformId();
-    this.metrics = transformDetail.getMetrics();
+  public TransformDetail(TransformDetail existing, Map<String, Transformation> transformationMap) {
+    this.transformationMap = transformationMap;
+    this.metrics = existing.getMetrics();
   }
 
-  public Transformation getTransformation() {
-    return transformation;
+  public Transformation getTransformation(String stageName) {
+    return transformationMap.get(stageName);
   }
 
-  public String getTransformId() {
-    return transformId;
+
+  public Map<String, Transformation> getTransformationMap() {
+    return transformationMap;
   }
 
-  public StageMetrics getMetrics() {
+  public Metrics getMetrics() {
     return metrics;
   }
 }
