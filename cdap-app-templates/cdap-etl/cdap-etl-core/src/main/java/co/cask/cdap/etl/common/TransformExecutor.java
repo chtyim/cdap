@@ -25,8 +25,10 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -42,6 +44,7 @@ public class TransformExecutor<IN, OUT> implements Destroyable {
 
   private final Map<String, List<TransformInformation>> transformInfos;
   private final String start;
+  private final Set<String> terminalNodes;
 
 
   class TransformInformation {
@@ -82,6 +85,7 @@ public class TransformExecutor<IN, OUT> implements Destroyable {
     this.transformInfos = new HashMap<>();
     this.start = start;
     Map<String, TransformInformation> transformInformationMap = new HashMap<>();
+    terminalNodes = getTerminalNodes(transformDetailList);
 
     for (Map.Entry<String, List<TransformDetail>> transformEntry : transformDetailList.entrySet()) {
       transformInfos.put(transformEntry.getKey(), new ArrayList<TransformInformation>());
@@ -104,7 +108,19 @@ public class TransformExecutor<IN, OUT> implements Destroyable {
     }
   }
 
-  public TransformResponse runOneIteration(IN input) throws Exception {
+  private Set<String> getTerminalNodes(Map<String, List<TransformDetail>> transformDetailMap) {
+    Set<String> terminalNodeSet = new HashSet<>();
+    for (List<TransformDetail> transformDetailList : transformDetailMap.values()) {
+      for (TransformDetail transformDetail : transformDetailList) {
+        if (!transformDetailMap.containsKey(transformDetail.getTransformId())) {
+          terminalNodeSet.add(transformDetail.getTransformId());
+        }
+      }
+    }
+    return terminalNodeSet;
+  }
+
+  public DefaultEmitter runOneIteration(IN input) throws Exception {
     if (transformInfos.isEmpty()) {
       // Note: this should not happen
       throw new IllegalArgumentException("No Connections found to either transform or sink..");

@@ -21,49 +21,54 @@ import co.cask.cdap.etl.api.InvalidEntry;
 import co.cask.cdap.etl.api.StageMetrics;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Default implementation of {@link Emitter}. Tracks how many records were emitted.
  *
  * @param <T> the type of object to emit
  */
-public class DefaultEmitter<T> implements Emitter<T>, Iterable<T> {
-  private final List<T> entryList;
-  private final List<InvalidEntry<T>> errorList;
+public class DefaultEmitter<T> implements Emitter<T> {
+  private final Map<String, List<T>> entriesMap;
+  private final Map<String, List<InvalidEntry<T>>> errorMap;
   private final StageMetrics metrics;
 
   public DefaultEmitter(StageMetrics metrics) {
-    this.entryList = new ArrayList<>();
-    this.errorList = new ArrayList<>();
+    this.entriesMap = new HashMap<>();
+    this.errorMap = new HashMap<>();
     this.metrics = metrics;
   }
 
   @Override
-  public void emit(T value) {
-    entryList.add(value);
-    metrics.count("records.out", 1);
+  public void emit(String stageName, T value) {
+    if (!entriesMap.containsKey(stageName)) {
+      entriesMap.put(stageName, new ArrayList<T>());
+    }
+    entriesMap.get(stageName).add(value);
+    metrics.count(stageName + ".records.out", 1);
   }
 
   @Override
-  public void emitError(InvalidEntry<T> value) {
-    errorList.add(value);
-    metrics.count("records.error", 1);
+  public void emitError(String stageName, InvalidEntry<T> value) {
+    if (!errorMap.containsKey(stageName)) {
+      errorMap.put(stageName, new ArrayList<InvalidEntry<T>>());
+    }
+    errorMap.get(stageName).add(value);
+    metrics.count(stageName + ".records.errors", 1);
   }
 
-  @Override
-  public Iterator<T> iterator() {
-    return entryList.iterator();
+  public Map<String, List<T>> getEntriesMap() {
+    return entriesMap;
   }
 
-  public Collection<InvalidEntry<T>> getErrors() {
-    return errorList;
+  public Map<String, List<InvalidEntry<T>>> getErrors() {
+    return errorMap;
   }
 
   public void reset() {
-    entryList.clear();
-    errorList.clear();
+    entriesMap.clear();
+    errorMap.clear();
   }
 }

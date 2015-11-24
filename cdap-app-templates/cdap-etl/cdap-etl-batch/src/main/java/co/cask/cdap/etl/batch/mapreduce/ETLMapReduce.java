@@ -287,7 +287,7 @@ public class ETLMapReduce extends AbstractMapReduce {
       BatchRuntimeContext runtimeContext = new MapReduceRuntimeContext(
         context, mapperMetrics, new DatasetContextLookupProvider(context), sourcePluginId);
       source.initialize(runtimeContext);
-      pipeline.put(sourcePluginId, new TransformDetail(sourcePluginId, source, runtimeContext.getMetrics(), false));
+      pipeline.put(sourcePluginId, new TransformDetail(sourcePluginId, source, runtimeContext.getMetrics()));
 
       transformErrorSinkMap = new HashMap<>();
       transformsWithoutErrorDataset = new HashSet<>();
@@ -321,7 +321,7 @@ public class ETLMapReduce extends AbstractMapReduce {
                                                         sinkOutput.getErrorDatasetName()));
         }
         // for sink, we will use mock metrics, as the same context is used for emitting metrics by WrappedSink
-        pipeline.put(sinkPluginId, new TransformDetail(sinkPluginId, sink, NoopMetrics.INSTANCE, true));
+        pipeline.put(sinkPluginId, new TransformDetail(sinkPluginId, sink, runtimeContext.getMetrics()));
       }
 
       Map<String, List<TransformDetail>> transformedPipeline = transformConnectionsMap(connectionsMap, pipeline);
@@ -376,7 +376,7 @@ public class ETLMapReduce extends AbstractMapReduce {
           context, mapperMetrics, new DatasetContextLookupProvider(context), transformId);
         LOG.debug("Transform Class : {}", transform.getClass().getName());
         transform.initialize(transformContext);
-        pipeline.put(transformId, new TransformDetail(transformId, transform, transformContext.getMetrics(), false));
+        pipeline.put(transformId, new TransformDetail(transformId, transform, transformContext.getMetrics()));
         if (transformInfo.getErrorDatasetName() != null) {
           transformErrorSinkMap.put(transformId,
                                     new ErrorSink<>(context, transformInfo.getErrorDatasetName()));

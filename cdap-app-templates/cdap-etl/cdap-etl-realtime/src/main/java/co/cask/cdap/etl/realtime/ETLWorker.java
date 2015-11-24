@@ -210,8 +210,6 @@ public class ETLWorker extends AbstractWorker {
       sink.initialize(sinkContext);
       sink = new TrackedRealtimeSink(sink, sinkContext.getMetrics());
       sinks.put(sinkInfo.getSinkId(), sink);
-      sinkToTransformDetailMap.put(sinkInfo.getSinkId(),
-                                   new TransformDetail(sinkInfo.getSinkId(), sinkContext.getMetrics(), true));
     }
     return sinkToTransformDetailMap;
   }
