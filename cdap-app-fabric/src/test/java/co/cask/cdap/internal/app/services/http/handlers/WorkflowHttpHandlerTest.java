@@ -735,6 +735,13 @@ public class WorkflowHttpHandlerTest  extends AppFabricTestBase {
     //check paused state
     assertSchedule(programId, scheduleName, false, 30, TimeUnit.SECONDS);
 
+    // Since this schedule starts a workflow every second, sleep for a second to make sure that all workflow runs
+    // that were started before the schedule was suspended are at least running (if not completed) and
+    // there are no race conditions in the following verifications.
+    TimeUnit.SECONDS.sleep(1);
+    // After this verification, it is guaranteed that there are no more running workflows.
+    verifyNoRunWithStatus(programId, "running");
+
     //Check status of a non existing schedule
     try {
       assertSchedule(programId, "invalid", true, 2, TimeUnit.SECONDS);
@@ -754,7 +761,6 @@ public class WorkflowHttpHandlerTest  extends AppFabricTestBase {
     Assert.assertEquals(404, suspendSchedule(TEST_NAMESPACE1, appName, scheduleName));
     Assert.assertEquals(404, resumeSchedule(TEST_NAMESPACE1, appName, scheduleName));
 
-    verifyNoRunWithStatus(programId, "running");
     deleteApp(Id.Application.from(TEST_NAMESPACE2, AppWithSchedule.class.getSimpleName()), 200);
   }
 
