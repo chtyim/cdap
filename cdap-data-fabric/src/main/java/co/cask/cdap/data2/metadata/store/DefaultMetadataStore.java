@@ -26,6 +26,7 @@ import co.cask.cdap.data2.dataset2.DatasetManagementException;
 import co.cask.cdap.data2.metadata.dataset.MetadataDataset;
 import co.cask.cdap.data2.metadata.dataset.MetadataEntry;
 import co.cask.cdap.data2.metadata.publisher.MetadataChangePublisher;
+import co.cask.cdap.data2.metadata.system.AbstractSystemMetadataWriter;
 import co.cask.cdap.data2.transaction.Transactions;
 import co.cask.cdap.proto.Id;
 import co.cask.cdap.proto.metadata.MetadataChangeRecord;
@@ -431,7 +432,7 @@ public class DefaultMetadataStore implements MetadataStore {
   }
 
   @Override
-  public Set<MetadataSearchResultRecord> searchMetadataOnType(MetadataScope scope, final String namespaceId,
+  public Set<MetadataSearchResultRecord> searchMetadataOnType(final MetadataScope scope, final String namespaceId,
                                                               final String searchQuery,
                                                               final MetadataSearchTargetType type) {
     Iterable<MetadataEntry> metadataEntries = execute(new TransactionExecutor.Function<MetadataDataset,
@@ -442,7 +443,15 @@ public class DefaultMetadataStore implements MetadataStore {
         // Check for existence of separator char to make sure we did search in the right indexed column.
         if (searchQuery.contains(MetadataDataset.KEYVALUE_SEPARATOR)) {
           // key=value search
-          return input.searchByKeyValue(namespaceId, searchQuery, type);
+          String finalSearchString = searchQuery;
+          if (scope == MetadataScope.SYSTEM && searchQuery.split(MetadataDataset.KEYVALUE_SEPARATOR)[0]
+            .equals(AbstractSystemMetadataWriter.SCHEMA_FIELD_PROPERTY_PREFIX)) {
+            // if the key value search is in System scope and the key is schema then its a search for schema fields
+            // hence replace the ":" in query with separator used while storing
+            finalSearchString = searchQuery.replace(MetadataDataset.KEYVALUE_SEPARATOR,
+                                                    Character.toString(AbstractSystemMetadataWriter.CTRL_A));
+          }
+          return input.searchByKeyValue(namespaceId, finalSearchString, type);
         }
         // value search
         return input.searchByValue(namespaceId, searchQuery, type);
