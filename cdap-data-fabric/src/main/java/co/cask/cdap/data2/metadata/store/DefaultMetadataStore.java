@@ -435,6 +435,7 @@ public class DefaultMetadataStore implements MetadataStore {
   public Set<MetadataSearchResultRecord> searchMetadataOnType(final MetadataScope scope, final String namespaceId,
                                                               final String searchQuery,
                                                               final MetadataSearchTargetType type) {
+    System.out.println("ab");
     Iterable<MetadataEntry> metadataEntries = execute(new TransactionExecutor.Function<MetadataDataset,
       Iterable<MetadataEntry>>() {
       @Override
@@ -443,18 +444,35 @@ public class DefaultMetadataStore implements MetadataStore {
         // Check for existence of separator char to make sure we did search in the right indexed column.
         if (searchQuery.contains(MetadataDataset.KEYVALUE_SEPARATOR)) {
           // key=value search
-          String finalSearchString = searchQuery;
           if (scope == MetadataScope.SYSTEM && searchQuery.split(MetadataDataset.KEYVALUE_SEPARATOR)[0]
             .equals(AbstractSystemMetadataWriter.SCHEMA_FIELD_PROPERTY_PREFIX)) {
             // if the key value search is in System scope and the key is schema then its a search for schema fields
-            // hence replace the ":" in query with separator used while storing
-            finalSearchString = searchQuery.replace(MetadataDataset.KEYVALUE_SEPARATOR,
-                                                    Character.toString(AbstractSystemMetadataWriter.CTRL_A));
+            return schemaSearch(input);
           }
-          return input.searchByKeyValue(namespaceId, finalSearchString, type);
+          return input.searchByKeyValue(namespaceId, searchQuery, type);
         }
         // value search
         return input.searchByValue(namespaceId, searchQuery, type);
+      }
+
+      private Iterable<MetadataEntry> schemaSearch(MetadataDataset input) {
+        // since its a search for schema fields replace the ":" in query with separator used while storing
+        String[] searchQuerySplit = searchQuery.split(MetadataDataset.KEYVALUE_SEPARATOR);
+        String finalSearchString = searchQuery.replaceAll(MetadataDataset.KEYVALUE_SEPARATOR,
+                                                Character.toString(AbstractSystemMetadataWriter.CTRL_A));
+        switch (searchQuerySplit.length) {
+          case 2:
+            return input.searchByValue(namespaceId, finalSearchString, type);
+          case 3:
+            finalSearchString = finalSearchString + MetadataDataset.KEYVALUE_SEPARATOR +
+              AbstractSystemMetadataWriter.SCHEMA_FIELD_PROPERTY_PREFIX + AbstractSystemMetadataWriter.CTRL_A +
+              searchQuerySplit[1];
+            return input.searchByKeyValue(namespaceId, finalSearchString, type);
+          default:
+            throw new IllegalArgumentException("Invalid query for schema field search. Schema fields can be searched " +
+                                                 "by name ex: \"schema:fieldname\" or name and type ex: " +
+                                                 "\"schema:fieldname:fieldtype\"");
+        }
       }
     }, scope);
     ImmutableSet.Builder<MetadataSearchResultRecord> builder = ImmutableSet.builder();

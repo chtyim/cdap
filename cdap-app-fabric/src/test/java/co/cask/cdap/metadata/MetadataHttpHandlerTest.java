@@ -48,8 +48,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nullable;
@@ -539,9 +537,20 @@ public class MetadataHttpHandlerTest extends MetadataTestBase {
     assertProgramSystemMetadata(Id.Program.from(app, ProgramType.MAPREDUCE, AllProgramsApp.NoOpMR.NAME), "Batch");
     assertProgramSystemMetadata(Id.Program.from(app, ProgramType.SPARK, AllProgramsApp.NoOpSpark.NAME), "Batch");
     assertProgramSystemMetadata(Id.Program.from(app, ProgramType.WORKFLOW, AllProgramsApp.NoOpWorkflow.NAME), "Batch");
-    String encoded = URLEncoder.encode("schema:body", "UTF-8");
     Set<MetadataSearchResultRecord> metadataSearchResultRecords = searchMetadata(Id.Namespace.DEFAULT,
                                                                                  "schema:body", null);
+    Assert.assertTrue(2 == metadataSearchResultRecords.size());
+    Set<MetadataSearchResultRecord> expected = ImmutableSet.of(
+      new MetadataSearchResultRecord(streamId),
+      new MetadataSearchResultRecord(mystream)
+    );
+    Assert.assertEquals(expected, metadataSearchResultRecords);
+
+    metadataSearchResultRecords =
+      searchMetadata(Id.Namespace.DEFAULT, ("schema:body:" + Schema.Type.STRING.toString()),
+                     null);
+    Assert.assertTrue(2 == metadataSearchResultRecords.size());
+    Assert.assertEquals(expected, metadataSearchResultRecords);
   }
 
   private void assertProgramSystemMetadata(Id.Program programId, String mode) throws Exception {
