@@ -14,3 +14,5 @@ CDAP Administration Manual Table of Contents
     Security <security>
     Operations <operations/index>
     Appendices <appendices/index>
+    Markdown <markdown-demo>
+    
