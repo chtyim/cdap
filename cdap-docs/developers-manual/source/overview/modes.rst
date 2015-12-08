@@ -107,7 +107,8 @@ CDAP consists chiefly of these components:
   special case, system services). Application containers scale linearly and elastically with the underlying
   infrastructure.
 
-In a Hadoop Environment, application containers are implemented as YARN containers and datasets use HBase and
-HDFS for actual storage. In other environments, the implementation can be different. For example, in Standalone
-CDAP, all services run in a single JVM, application containers are implemented as threads, and data is stored in
-the local file system.
+As :ref:`described above <distributed-data-application-platform>`, in a Hadoop
+Environment, application containers are implemented as YARN containers and datasets use
+HBase and HDFS for actual storage. In other environments, the implementation can be
+different. For example, in Standalone CDAP, all services run in a single JVM, application
+containers are implemented as threads, and data is stored in the local file system.
