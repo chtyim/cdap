@@ -18,15 +18,27 @@ package co.cask.cdap.etl.common;
 
 import co.cask.cdap.api.metrics.Metrics;
 import co.cask.cdap.etl.api.StageMetrics;
+import co.cask.cdap.etl.log.LogContext;
+
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
+import java.util.concurrent.Callable;
 
 /**
  * Wrapper around the {@link Metrics} instance from CDAP that prefixes metric names with the ETL context the metric
  * was emitted from.
  */
-public class DefaultStageMetrics implements StageMetrics {
+public class DefaultStageMetrics implements StageMetrics, Externalizable {
 
-  private final Metrics metrics;
-  private final String prefix;
+  private Metrics metrics;
+  private String prefix;
+
+  // Only used by Externalizable
+  public DefaultStageMetrics() {
+    // no-op
+  }
 
   public DefaultStageMetrics(Metrics metrics, String stageName) {
     this.metrics = metrics;
@@ -34,22 +46,58 @@ public class DefaultStageMetrics implements StageMetrics {
   }
 
   @Override
-  public void count(String metricName, int delta) {
-    metrics.count(prefix + metricName, delta);
+  public void count(final String metricName, final int delta) {
+    LogContext.runWithoutLoggingUnchecked(new Callable<Void>() {
+      @Override
+      public Void call() throws Exception {
+        metrics.count(prefix + metricName, delta);
+        return null;
+      }
+    });
   }
 
   @Override
-  public void gauge(String metricName, long value) {
-    metrics.gauge(prefix + metricName, value);
+  public void gauge(final String metricName, final long value) {
+    LogContext.runWithoutLoggingUnchecked(new Callable<Void>() {
+      @Override
+      public Void call() throws Exception {
+        metrics.gauge(prefix + metricName, value);
+        return null;
+      }
+    });
   }
 
   @Override
-  public void pipelineCount(String metricName, int delta) {
-    metrics.count(metricName, delta);
+  public void pipelineCount(final String metricName, final int delta) {
+    LogContext.runWithoutLoggingUnchecked(new Callable<Void>() {
+      @Override
+      public Void call() throws Exception {
+        metrics.count(metricName, delta);
+        return null;
+      }
+    });
   }
 
   @Override
-  public void pipelineGauge(String metricName, long value) {
-    metrics.gauge(metricName, value);
+  public void pipelineGauge(final String metricName, final long value) {
+    LogContext.runWithoutLoggingUnchecked(new Callable<Void>() {
+      @Override
+      public Void call() throws Exception {
+        metrics.gauge(metricName, value);
+        return null;
+      }
+    });
+  }
+
+  @Override
+  public void writeExternal(ObjectOutput out) throws IOException {
+    out.writeObject(metrics);
+    out.writeObject(prefix);
+  }
+
+  @Override
+  public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+    metrics = (Metrics) in.readObject();
+    prefix = (String) in.readObject();
   }
 }
