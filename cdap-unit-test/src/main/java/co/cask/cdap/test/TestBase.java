@@ -137,7 +137,6 @@ public class TestBase {
   public static TemporaryFolder tmpFolder = new TemporaryFolder();
 
   private static CConfiguration cConf;
-  private static int startCount;
   private static MetricsQueryService metricsQueryService;
   private static MetricsCollectionService metricsCollectionService;
   private static SchedulerService schedulerService;
@@ -156,9 +155,6 @@ public class TestBase {
 
   @BeforeClass
   public static void initialize() throws Exception {
-    if (startCount++ > 0) {
-      return;
-    }
     File localDataDir = tmpFolder.newFolder();
 
     cConf = createCConf(localDataDir);
