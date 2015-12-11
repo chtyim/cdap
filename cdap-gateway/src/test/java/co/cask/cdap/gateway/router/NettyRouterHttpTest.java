@@ -28,11 +28,13 @@ import com.google.common.collect.Maps;
 import com.google.common.net.InetAddresses;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import org.apache.commons.net.DefaultSocketFactory;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.twill.discovery.DiscoveryService;
 import org.apache.twill.discovery.DiscoveryServiceClient;
 
 import java.util.Map;
+import javax.net.SocketFactory;
 
 /**
  * Tests Netty Router running on HTTP.
@@ -57,6 +59,11 @@ public class NettyRouterHttpTest extends NettyRouterTestBase {
   @Override
   protected DefaultHttpClient getHTTPClient() throws Exception {
     return new DefaultHttpClient();
+  }
+
+  @Override
+  protected SocketFactory getSocketFactory() throws Exception {
+    return new DefaultSocketFactory();
   }
 
   private static class HttpRouterService extends RouterService {

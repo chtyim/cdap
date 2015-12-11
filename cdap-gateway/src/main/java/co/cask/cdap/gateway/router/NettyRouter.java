@@ -55,6 +55,7 @@ import org.jboss.netty.handler.codec.http.HttpRequestDecoder;
 import org.jboss.netty.handler.codec.http.HttpRequestEncoder;
 import org.jboss.netty.handler.codec.http.HttpResponseDecoder;
 import org.jboss.netty.handler.codec.http.HttpResponseEncoder;
+import org.jboss.netty.handler.timeout.IdleStateHandler;
 import org.jboss.netty.util.HashedWheelTimer;
 import org.jboss.netty.util.Timer;
 import org.slf4j.Logger;
@@ -285,7 +286,10 @@ public class NettyRouter extends AbstractIdleService {
         pipeline.addLast("request-encoder", new HttpRequestEncoder());
         // outbound handler gets dynamically added here (after 'request-encoder')
         pipeline.addLast("response-decoder", new HttpResponseDecoder());
-        pipeline.addLast("read-timeout", new HttpIdleStateHandler(timer, connectionTimeout));
+        // disable the read-specific and write-specific timeouts; we only utilize IdleState#ALL_IDLE
+        pipeline.addLast("idle-event-generator",
+                         new IdleStateHandler(timer, 0, 0, connectionTimeout));
+        pipeline.addLast("read-timeout", new HttpIdleStateHandler());
         return pipeline;
       }
     });
