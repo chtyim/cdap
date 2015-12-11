@@ -19,9 +19,9 @@ package co.cask.cdap.gateway.router;
 import co.cask.cdap.common.conf.CConfiguration;
 import co.cask.cdap.common.conf.Constants;
 import co.cask.cdap.common.conf.SConfiguration;
-import co.cask.cdap.gateway.router.handlers.HttpIdleStateHandler;
 import co.cask.cdap.gateway.router.handlers.HttpRequestHandler;
 import co.cask.cdap.gateway.router.handlers.HttpStatusRequestHandler;
+import co.cask.cdap.gateway.router.handlers.IdleEventProcessor;
 import co.cask.cdap.gateway.router.handlers.SecurityAuthenticationHttpHandler;
 import co.cask.cdap.security.auth.AccessTokenTransformer;
 import co.cask.cdap.security.auth.TokenValidator;
@@ -289,7 +289,7 @@ public class NettyRouter extends AbstractIdleService {
         // disable the read-specific and write-specific timeouts; we only utilize IdleState#ALL_IDLE
         pipeline.addLast("idle-event-generator",
                          new IdleStateHandler(timer, 0, 0, connectionTimeout));
-        pipeline.addLast("read-timeout", new HttpIdleStateHandler());
+        pipeline.addLast("idle-event-processor", new IdleEventProcessor());
         return pipeline;
       }
     });

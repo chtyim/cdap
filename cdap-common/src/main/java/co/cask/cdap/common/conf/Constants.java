@@ -391,7 +391,7 @@ public final class Constants {
     public static final String SERVER_WORKER_THREADS = "router.server.worker.threads";
     public static final String CLIENT_BOSS_THREADS = "router.client.boss.threads";
     public static final String CLIENT_WORKER_THREADS = "router.client.worker.threads";
-    public static final String CONNECTION_TIMEOUT_SECS = "router.connection.timeout.secs";
+    public static final String CONNECTION_TIMEOUT_SECS = "router.connection.idle.timeout.secs";
 
     /**
      * Defaults.

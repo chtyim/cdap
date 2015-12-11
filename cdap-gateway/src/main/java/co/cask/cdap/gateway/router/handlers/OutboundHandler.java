@@ -45,7 +45,6 @@ public class OutboundHandler extends SimpleChannelUpstreamHandler {
   public void messageReceived(final ChannelHandlerContext ctx, final MessageEvent e) throws Exception {
     ChannelBuffer msg = (ChannelBuffer) e.getMessage();
 
-    // TODO: can this cause messages to go out of order?
     Channels.write(inboundChannel, msg).addListener(new ChannelFutureListener() {
       @Override
       public void operationComplete(ChannelFuture future) throws Exception {

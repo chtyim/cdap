@@ -401,7 +401,7 @@ public abstract class NettyRouterTestBase {
 
   // have a timeout of 10 seconds, in case the final call to reader.read hangs (in the case that connection isn't
   // disconnected)
-  @Test(timeout=10000)
+  @Test(timeout = 10000)
   public void testConnectionIdleTimeout() throws Exception {
     String path = "/v2/ping";
     URI uri = new URI(resolveURI(Constants.Router.GATEWAY_DISCOVERY_NAME, path));

@@ -1181,7 +1181,7 @@
   </property>
 
   <property>
-    <name>router.connection.timeout.secs</name>
+    <name>router.connection.idle.timeout.secs</name>
     <value>15</value>
     <description>
       The number of seconds after an http request completes that idle router connections are closed
