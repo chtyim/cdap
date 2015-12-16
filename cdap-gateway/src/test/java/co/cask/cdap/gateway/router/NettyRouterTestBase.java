@@ -406,32 +406,37 @@ public abstract class NettyRouterTestBase {
     String path = "/v2/ping";
     URI uri = new URI(resolveURI(Constants.Router.GATEWAY_DISCOVERY_NAME, path));
     Socket socket = getSocketFactory().createSocket(uri.getHost(), uri.getPort());
+    socket.setSoTimeout(0);
     PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+    InputStream inputStream = socket.getInputStream();
+    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+    makeRequest(uri.getHost(), path, out, reader);
+
+    // sleep for 500 ms over the configured idle timeout; the connection on server side should get closed by then
+//    TimeUnit.MILLISECONDS.sleep(TimeUnit.SECONDS.toMillis(CONNECTION_IDLE_TIMEOUT_SECS) + 500);
+
+    // assert that the connection is closed on the client side
+    makeRequest(uri.getHost(), path, out, reader);
+
+    // assert that the connection is closed on the server side
+    Assert.assertEquals(1, defaultServer1.getNumConnectionsOpened() + defaultServer2.getNumConnectionsOpened());
+    Assert.assertEquals(1, defaultServer1.getNumConnectionsClosed() + defaultServer2.getNumConnectionsClosed());
+  }
+
+  private void makeRequest(String host, String path, PrintWriter out, BufferedReader reader) throws IOException {
 
     //Send request
     out.print("GET " + path + " HTTP/1.1\r\n" +
-                "Host: " + uri.getHost() + "\r\n" +
+                "Host: " + host + "\r\n" +
                 "Connection: keep-alive\r\n\r\n");
     out.flush();
 
 
-    InputStream inputStream = socket.getInputStream();
-    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
     String firstLine = reader.readLine();
     Assert.assertTrue(firstLine.contains("200 OK"));
 
     while (reader.readLine() != null) {
     }
-
-    // sleep for 500 ms over the configured idle timeout; the connection on server side should get closed by then
-    TimeUnit.MILLISECONDS.sleep(TimeUnit.SECONDS.toMillis(CONNECTION_IDLE_TIMEOUT_SECS) + 500);
-
-    // assert that the connection is closed on the client side
-    Assert.assertEquals(-1, reader.read());
-
-    // assert that the connection is closed on the server side
-    Assert.assertEquals(1, defaultServer1.getNumConnectionsOpened() + defaultServer2.getNumConnectionsOpened());
-    Assert.assertEquals(1, defaultServer1.getNumConnectionsClosed() + defaultServer2.getNumConnectionsClosed());
   }
 
   @Test
@@ -684,6 +689,7 @@ public abstract class NettyRouterTestBase {
       @GET
       @Path("/v2/ping")
       public void gateway(@SuppressWarnings("UnusedParameters") HttpRequest request, final HttpResponder responder) {
+        System.out.println("****************** Got Request...");
         numRequests.incrementAndGet();
 
         responder.sendString(HttpResponseStatus.OK, serviceNameSupplier.get());
