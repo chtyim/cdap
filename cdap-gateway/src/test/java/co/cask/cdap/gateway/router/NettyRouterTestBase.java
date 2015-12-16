@@ -23,6 +23,7 @@ import co.cask.http.AbstractHttpHandler;
 import co.cask.http.ChunkResponder;
 import co.cask.http.HttpResponder;
 import co.cask.http.NettyHttpService;
+import com.google.common.base.Charsets;
 import com.google.common.base.Function;
 import com.google.common.base.Supplier;
 import com.google.common.base.Throwables;
@@ -409,34 +410,30 @@ public abstract class NettyRouterTestBase {
     socket.setSoTimeout(0);
     PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
     InputStream inputStream = socket.getInputStream();
-    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-    makeRequest(uri.getHost(), path, out, reader);
+    makeRequest(uri.getHost(), path, out, inputStream);
 
     // sleep for 500 ms over the configured idle timeout; the connection on server side should get closed by then
 //    TimeUnit.MILLISECONDS.sleep(TimeUnit.SECONDS.toMillis(CONNECTION_IDLE_TIMEOUT_SECS) + 500);
 
     // assert that the connection is closed on the client side
-    makeRequest(uri.getHost(), path, out, reader);
+    makeRequest(uri.getHost(), path, out, inputStream);
 
     // assert that the connection is closed on the server side
     Assert.assertEquals(1, defaultServer1.getNumConnectionsOpened() + defaultServer2.getNumConnectionsOpened());
     Assert.assertEquals(1, defaultServer1.getNumConnectionsClosed() + defaultServer2.getNumConnectionsClosed());
   }
 
-  private void makeRequest(String host, String path, PrintWriter out, BufferedReader reader) throws IOException {
+  private void makeRequest(String host, String path, PrintWriter out, InputStream inputStream) throws IOException {
 
     //Send request
     out.print("GET " + path + " HTTP/1.1\r\n" +
-                "Host: " + host + "\r\n" +
-                "Connection: keep-alive\r\n\r\n");
+                "Host: " + host + "\r\n\r\n");
     out.flush();
 
-
-    String firstLine = reader.readLine();
-    Assert.assertTrue(firstLine.contains("200 OK"));
-
-    while (reader.readLine() != null) {
-    }
+    byte[] buffer = new byte[1024];
+    inputStream.read(buffer);
+    String firstLine = new String(buffer, Charsets.UTF_8.name());
+    System.out.println("********* First line = " + firstLine);
   }
 
   @Test
