@@ -48,14 +48,17 @@ import org.jboss.netty.channel.group.ChannelGroup;
 import org.jboss.netty.channel.group.DefaultChannelGroup;
 import org.jboss.netty.channel.socket.nio.NioClientBossPool;
 import org.jboss.netty.channel.socket.nio.NioClientSocketChannelFactory;
+import org.jboss.netty.channel.socket.nio.NioServerBossPool;
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 import org.jboss.netty.channel.socket.nio.NioWorkerPool;
 import org.jboss.netty.handler.codec.http.HttpRequestDecoder;
 import org.jboss.netty.handler.codec.http.HttpRequestEncoder;
 import org.jboss.netty.handler.codec.http.HttpResponseDecoder;
 import org.jboss.netty.handler.codec.http.HttpResponseEncoder;
+import org.jboss.netty.handler.execution.OrderedMemoryAwareThreadPoolExecutor;
 import org.jboss.netty.handler.timeout.IdleStateHandler;
 import org.jboss.netty.util.HashedWheelTimer;
+import org.jboss.netty.util.ThreadNameDeterminer;
 import org.jboss.netty.util.Timer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,7 +69,6 @@ import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -196,11 +198,16 @@ public class NettyRouter extends AbstractIdleService {
   }
 
   private ExecutorService createExecutorService(int threadPoolSize, String name) {
-    return Executors.newFixedThreadPool(threadPoolSize,
-                                        new ThreadFactoryBuilder()
-                                          .setDaemon(true)
-                                          .setNameFormat(name)
-                                          .build());
+    return new OrderedMemoryAwareThreadPoolExecutor(threadPoolSize, 0, 0,
+                                             100, TimeUnit.SECONDS, new ThreadFactoryBuilder()
+                                               .setDaemon(true)
+                                               .setNameFormat(name)
+                                               .build());
+//    return Executors.newFixedThreadPool(threadPoolSize,
+//                                        new ThreadFactoryBuilder()
+//                                          .setDaemon(true)
+//                                          .setNameFormat(name)
+//                                          .build());
   }
 
   private void bootstrapServer(final ChannelUpstreamHandler connectionTracker) {
@@ -209,7 +216,10 @@ public class NettyRouter extends AbstractIdleService {
     ExecutorService serverWorkerExecutor = createExecutorService(serverWorkerThreadPoolSize,
                                                                  "router-server-worker-thread-%d");
     serverBootstrap = new ServerBootstrap(
-      new NioServerSocketChannelFactory(serverBossExecutor, serverWorkerExecutor));
+      new NioServerSocketChannelFactory(new NioServerBossPool(serverBossExecutor, serverBossThreadPoolSize,
+                                                              ThreadNameDeterminer.CURRENT),
+                                        new NioWorkerPool(serverWorkerExecutor, serverWorkerThreadPoolSize,
+                                                          ThreadNameDeterminer.CURRENT)));
     serverBootstrap.setOption("backlog", serverConnectionBacklog);
     serverBootstrap.setOption("child.bufferFactory", new DirectChannelBufferFactory());
 
@@ -274,8 +284,9 @@ public class NettyRouter extends AbstractIdleService {
 
     clientBootstrap = new ClientBootstrap(
       new NioClientSocketChannelFactory(
-        new NioClientBossPool(clientBossExecutor, clientBossThreadPoolSize),
-        new NioWorkerPool(clientWorkerExecutor, clientWorkerThreadPoolSize)));
+        new NioClientBossPool(clientBossExecutor, clientBossThreadPoolSize, new HashedWheelTimer(),
+                              ThreadNameDeterminer.CURRENT),
+        new NioWorkerPool(clientWorkerExecutor, clientWorkerThreadPoolSize, ThreadNameDeterminer.CURRENT)));
 
 
     clientBootstrap.setPipelineFactory(new ChannelPipelineFactory() {

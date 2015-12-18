@@ -26,6 +26,7 @@ import org.jboss.netty.channel.Channels;
 import org.jboss.netty.channel.ExceptionEvent;
 import org.jboss.netty.channel.MessageEvent;
 import org.jboss.netty.channel.SimpleChannelUpstreamHandler;
+import org.jboss.netty.handler.execution.ChannelUpstreamEventRunnable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,20 +43,19 @@ public class OutboundHandler extends SimpleChannelUpstreamHandler {
   }
 
   @Override
-  public void messageReceived(final ChannelHandlerContext ctx, final MessageEvent e) throws Exception {
-    ChannelBuffer msg = (ChannelBuffer) e.getMessage();
-
+  public void messageReceived(final ChannelHandlerContext ctx, final MessageEvent event) throws Exception {
+    final ChannelBuffer msg = (ChannelBuffer) event.getMessage();
     Channels.write(inboundChannel, msg).addListener(new ChannelFutureListener() {
       @Override
       public void operationComplete(ChannelFuture future) throws Exception {
-        ctx.getPipeline().execute(new Runnable() {
+        ctx.getPipeline().execute(new ChannelUpstreamEventRunnable(ctx, event, null) {
           @Override
-          public void run() {
+          public void doRun() {
             try {
-              OutboundHandler.super.messageReceived(ctx, e);
+              OutboundHandler.super.messageReceived(ctx, event);
             } catch (Exception ex) {
               LOG.error("Exception while writing to pipeline {}", ctx.getChannel(), ex);
-              HttpRequestHandler.closeOnFlush(e.getChannel());
+              HttpRequestHandler.closeOnFlush(event.getChannel());
             }
           }
         });
