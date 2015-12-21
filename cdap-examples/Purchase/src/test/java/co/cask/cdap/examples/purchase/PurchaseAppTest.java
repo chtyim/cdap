@@ -16,6 +16,7 @@
 
 package co.cask.cdap.examples.purchase;
 
+import co.cask.cdap.api.common.Bytes;
 import co.cask.cdap.api.metrics.RuntimeMetrics;
 import co.cask.cdap.test.ApplicationManager;
 import co.cask.cdap.test.FlowManager;
@@ -31,6 +32,7 @@ import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
@@ -44,6 +46,31 @@ public class PurchaseAppTest extends TestBase {
   public static final TestConfiguration CONFIG = new TestConfiguration("explore.enabled", false);
 
   private static final Gson GSON = new Gson();
+
+  @Test
+  public void testCDAP4501() throws Exception {
+    ApplicationManager appManager = deployApplication(PurchaseApp.class);
+    ServiceManager serviceManager = appManager.getServiceManager(CatalogLookupService.SERVICE_NAME).start();
+    serviceManager.waitForStatus(true);
+
+    final String payload = "payload";
+    URL url = new URL(serviceManager.getServiceURL(15, TimeUnit.SECONDS), "write");
+    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+    try {
+      conn.setFixedLengthStreamingMode(payload.length());
+      conn.setRequestProperty("Content-Length", Long.toString(payload.length()));
+      conn.setRequestMethod("PUT");
+      conn.setRequestProperty("Expect", "100-Continue");
+      conn.setDoOutput(true);
+      conn.connect();
+      OutputStream outputStream = conn.getOutputStream();
+      outputStream.write(Bytes.toBytes(payload));
+      outputStream.close();
+      Assert.assertEquals(400, conn.getResponseCode());
+    } finally {
+      conn.disconnect();
+    }
+  }
 
   @Test
   public void test() throws Exception {

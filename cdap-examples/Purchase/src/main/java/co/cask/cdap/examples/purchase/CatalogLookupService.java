@@ -23,6 +23,7 @@ import co.cask.cdap.api.service.http.HttpServiceResponder;
 import com.google.common.base.Charsets;
 
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
@@ -38,6 +39,19 @@ public class CatalogLookupService extends AbstractService {
     setName(SERVICE_NAME);
     setDescription("Service to lookup product ids.");
     addHandler(new ProductCatalogLookup());
+    addHandler(new CustomHandler());
+  }
+
+  /**
+   *
+   */
+  public static final class CustomHandler extends AbstractHttpServiceHandler {
+    @PUT
+    @Path("write")
+    public void write(final HttpServiceRequest request,
+                      final HttpServiceResponder responder) {
+      responder.sendJson(400, new String("message"));
+    }
   }
 
   /**
