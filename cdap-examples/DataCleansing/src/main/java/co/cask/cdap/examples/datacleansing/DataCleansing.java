@@ -44,6 +44,7 @@ public class DataCleansing extends AbstractApplication {
 
     // Process the records from "rawRecords" partitioned file set using MapReduce
     addMapReduce(new DataCleansingMapReduce());
+    addMapReduce(new CleanRecordsConsumer());
 
     // Store the state of the incrementally processing MapReduce
     createDataset(CONSUMING_STATE, KeyValueTable.class);
@@ -61,6 +62,7 @@ public class DataCleansing extends AbstractApplication {
       .setPartitioning(Partitioning.builder().addLongField("time").addIntField("zip").build())
       // Properties for file set
       .setOutputFormat(TextOutputFormat.class)
+      .setInputFormat(TextInputFormat.class)
       // Properties for Explore (to create a partitioned Hive table)
       .setEnableExploreOnCreate(true)
       .setExploreFormat("text")

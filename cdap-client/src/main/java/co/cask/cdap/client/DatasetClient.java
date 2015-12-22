@@ -85,7 +85,6 @@ public class DatasetClient {
                                        new TypeToken<List<DatasetSpecificationSummary>>() { }).getResponseObject();
   }
 
-
   /**
    * Gets information about a dataset.
    *

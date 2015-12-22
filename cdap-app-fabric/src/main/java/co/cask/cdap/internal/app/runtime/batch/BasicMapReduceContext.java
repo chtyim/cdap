@@ -301,7 +301,6 @@ public class BasicMapReduceContext extends AbstractContext implements MapReduceC
 
   @Nullable
   public InputFormatProvider getInputFormatProvider() {
-
     return inputFormatProvider;
   }
 
