@@ -24,9 +24,9 @@ package co.cask.cdap.examples.sparkkmeans
 
 import breeze.linalg.{DenseVector, Vector, squaredDistance}
 import co.cask.cdap.api.spark.{ScalaSparkProgram, SparkContext}
-import org.apache.spark.rdd.NewHadoopRDD
+import org.apache.spark.rdd.RDD
 import org.slf4j.{Logger, LoggerFactory}
-
+import org.apache.spark.SparkContext._
 /**
  * Implementation of KMeans Clustering Spark Program.
  */
@@ -63,9 +63,9 @@ class SparkKMeansProgram extends ScalaSparkProgram {
 
     LOG.info("Processing points data")
 
-    val linesDataset: NewHadoopRDD[Array[Byte], Point] =
+    val linesDataset: RDD[(Array[Byte], Point)] =
       sc.readFromDataset("points", classOf[Array[Byte]], classOf[Point])
-    val lines = linesDataset.values
+    val lines = linesDataset.map(_._2)
     val data = lines.map(pointVector).cache()
 
     LOG.info("Calculating centers")
