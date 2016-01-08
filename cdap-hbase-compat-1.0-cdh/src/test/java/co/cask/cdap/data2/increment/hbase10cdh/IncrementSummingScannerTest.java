@@ -45,6 +45,7 @@ import org.apache.hadoop.hbase.regionserver.HRegion;
 import org.apache.hadoop.hbase.regionserver.HRegionFileSystem;
 import org.apache.hadoop.hbase.regionserver.RegionScanner;
 import org.apache.hadoop.hbase.regionserver.ScanType;
+import org.apache.hadoop.hbase.regionserver.ScannerContext;
 import org.apache.hadoop.hbase.util.Bytes;
 import org.apache.hadoop.hbase.wal.WAL;
 import org.apache.hadoop.hbase.wal.WALFactory;
@@ -352,7 +353,7 @@ public class IncrementSummingScannerTest {
       scanner = new IncrementSummingScanner(region, -1, scanner, ScanType.USER_SCAN);
 
       List<Cell> results = Lists.newArrayList();
-      assertTrue(scanner.next(results, 10));
+      assertTrue(scanner.next(results, ScannerContext.newBuilder().setBatchLimit(10).build()));
       assertEquals(2, results.size());
       Cell cell = results.get(0);
       assertNotNull(cell);
@@ -367,7 +368,7 @@ public class IncrementSummingScannerTest {
       assertEquals(55, Bytes.toLong(cell.getValue()));
 
       results.clear();
-      assertFalse(scanner.next(results, 10));
+      assertFalse(scanner.next(results, ScannerContext.newBuilder().setBatchLimit(10).build()));
       assertEquals(1, results.size());
       cell = results.get(0);
       assertNotNull(cell);

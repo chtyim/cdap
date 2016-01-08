@@ -45,6 +45,7 @@ import org.apache.hadoop.hbase.coprocessor.ObserverContext;
 import org.apache.hadoop.hbase.coprocessor.RegionCoprocessorEnvironment;
 import org.apache.hadoop.hbase.regionserver.InternalScanner;
 import org.apache.hadoop.hbase.regionserver.ScanType;
+import org.apache.hadoop.hbase.regionserver.ScannerContext;
 import org.apache.hadoop.hbase.regionserver.Store;
 import org.apache.hadoop.hbase.regionserver.compactions.CompactionRequest;
 import org.apache.hadoop.hbase.util.Bytes;
@@ -196,12 +197,12 @@ public final class HBaseQueueRegionObserver extends BaseRegionObserver {
 
     @Override
     public boolean next(List<Cell> results) throws IOException {
-      return next(results, -1);
+      return next(results, ScannerContext.newBuilder().setBatchLimit(-1).build());
     }
 
     @Override
-    public boolean next(List<Cell> results, int limit) throws IOException {
-      boolean hasNext = scanner.next(results, limit);
+    public boolean next(List<Cell> results, ScannerContext scannerContext) throws IOException {
+      boolean hasNext = scanner.next(results, scannerContext);
 
       while (!results.isEmpty()) {
         totalRows++;
@@ -235,7 +236,7 @@ public final class HBaseQueueRegionObserver extends BaseRegionObserver {
         if (canEvict(consumerConfig, results)) {
           rowsEvicted++;
           results.clear();
-          hasNext = scanner.next(results, limit);
+          hasNext = scanner.next(results, scannerContext);
         } else {
           break;
         }

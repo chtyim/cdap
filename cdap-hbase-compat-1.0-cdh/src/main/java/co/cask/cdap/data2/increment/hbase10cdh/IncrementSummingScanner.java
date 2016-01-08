@@ -28,10 +28,13 @@ import org.apache.hadoop.hbase.regionserver.HRegion;
 import org.apache.hadoop.hbase.regionserver.InternalScanner;
 import org.apache.hadoop.hbase.regionserver.RegionScanner;
 import org.apache.hadoop.hbase.regionserver.ScanType;
+import org.apache.hadoop.hbase.regionserver.ScannerContext;
 import org.apache.hadoop.hbase.util.Bytes;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +43,24 @@ import java.util.List;
  */
 class IncrementSummingScanner implements RegionScanner {
   private static final Log LOG = LogFactory.getLog(IncrementSummingScanner.class);
+  private static final Field SCANNER_CONTEXT_LIMITS_FIELD;
+  private static final Method GET_BATCH_METHOD;
+
+  static {
+    try {
+      Field limitsField = ScannerContext.class.getDeclaredField("limits");
+      limitsField.setAccessible(true);
+      SCANNER_CONTEXT_LIMITS_FIELD = limitsField;
+
+      Class<?> limitFieldsClass = limitsField.getType();
+      Method getBatchMethod = limitFieldsClass.getDeclaredMethod("getBatch");
+      getBatchMethod.setAccessible(true);
+      GET_BATCH_METHOD = getBatchMethod;
+    } catch (Exception e) {
+      LOG.error("Failed to get ScannerContext.LimitFields.getBatch method through reflection.");
+      throw new IllegalStateException(e);
+    }
+  }
 
   private final HRegion region;
   private final WrappedScanner baseScanner;
@@ -112,35 +133,42 @@ class IncrementSummingScanner implements RegionScanner {
   }
 
   @Override
-  public boolean nextRaw(List<Cell> cells) throws IOException {
-    return nextRaw(cells, batchSize);
+  public int getBatch() {
+    return batchSize;
   }
 
   @Override
-  public boolean nextRaw(List<Cell> cells, int limit) throws IOException {
-    return nextInternal(cells, limit);
+  public boolean nextRaw(List<Cell> cells) throws IOException {
+    return nextRaw(cells, ScannerContext.newBuilder().setBatchLimit(batchSize).build());
+  }
+
+  @Override
+  public boolean nextRaw(List<Cell> cells, ScannerContext scannerContext) throws IOException {
+    return nextInternal(cells, scannerContext);
   }
 
   @Override
   public boolean next(List<Cell> cells) throws IOException {
-    return next(cells, batchSize);
+    return next(cells, ScannerContext.newBuilder().setBatchLimit(batchSize).build());
   }
 
   @Override
-  public boolean next(List<Cell> cells, int limit) throws IOException {
-    return nextInternal(cells, limit);
+  public boolean next(List<Cell> cells, ScannerContext scannerContext) throws IOException {
+    return nextInternal(cells, scannerContext);
   }
 
-  private boolean nextInternal(List<Cell> cells, int limit) throws IOException {
+  private boolean nextInternal(List<Cell> cells, ScannerContext scannerContext) throws IOException {
     if (LOG.isTraceEnabled()) {
-      LOG.trace("nextInternal called with limit=" + limit);
+      LOG.trace("nextInternal called with limit=" + scannerContext);
     }
     Cell previousIncrement = null;
     long runningSum = 0;
     int addedCnt = 0;
     baseScanner.startNext();
     Cell cell;
-    while ((cell = baseScanner.peekNextCell(limit)) != null && (limit <= 0 || addedCnt < limit)) {
+    int limit = getBatchLimit(scannerContext);
+
+    while ((cell = baseScanner.peekNextCell(scannerContext)) != null && (limit <= 0 || addedCnt < limit)) {
       // we use the "peek" semantics so that only once cell is ever emitted per iteration
       // this makes is clearer and easier to enforce that the returned results are <= limit
       if (LOG.isTraceEnabled()) {
@@ -166,7 +194,7 @@ class IncrementSummingScanner implements RegionScanner {
         }
         cells.add(cell);
         addedCnt++;
-        baseScanner.nextCell(limit);
+        baseScanner.nextCell(scannerContext);
         continue;
       }
 
@@ -174,7 +202,7 @@ class IncrementSummingScanner implements RegionScanner {
       if (IncrementHandler.isIncrement(cell)) {
         if (LOG.isTraceEnabled()) {
           LOG.trace("Found increment for row=" + Bytes.toStringBinary(CellUtil.cloneRow(cell)) + ", " +
-              "column=" + Bytes.toStringBinary(CellUtil.cloneQualifier(cell)));
+                      "column=" + Bytes.toStringBinary(CellUtil.cloneQualifier(cell)));
         }
         if (!sameCell(previousIncrement, cell)) {
           if (previousIncrement != null) {
@@ -194,7 +222,7 @@ class IncrementSummingScanner implements RegionScanner {
         }
         // add this increment to the tally
         runningSum += Bytes.toLong(cell.getValueArray(),
-            cell.getValueOffset() + IncrementHandlerState.DELTA_MAGIC_PREFIX.length);
+                                   cell.getValueOffset() + IncrementHandlerState.DELTA_MAGIC_PREFIX.length);
       } else {
         // otherwise (not an increment)
         if (previousIncrement != null) {
@@ -202,7 +230,7 @@ class IncrementSummingScanner implements RegionScanner {
             // if qualifier matches previous and this is a long, add to running sum, emit
             runningSum += Bytes.toLong(cell.getValueArray(), cell.getValueOffset());
             // this cell already processed as part of the previous increment's sum, so consume it
-            baseScanner.nextCell(limit);
+            baseScanner.nextCell(scannerContext);
           }
           if (LOG.isTraceEnabled()) {
             LOG.trace("Including increment: sum=" + runningSum + ", cell=" + previousIncrement);
@@ -229,12 +257,12 @@ class IncrementSummingScanner implements RegionScanner {
         }
       }
       // if we made it this far, consume the current cell
-      baseScanner.nextCell(limit);
+      baseScanner.nextCell(scannerContext);
     }
     // emit any left over increment, if we hit the end
     if (previousIncrement != null) {
       // in any situation where we exited due to limit, previousIncrement should already be null
-      Preconditions.checkState(limit <= 0 || addedCnt < limit, "addedCnt=%s, limit=%s", addedCnt, limit);
+      Preconditions.checkState(getBatch() <= 0 || addedCnt < getBatch(), "addedCnt=%s, limit=%s", addedCnt, getBatch());
       if (LOG.isTraceEnabled()) {
         LOG.trace("Including leftover increment: sum=" + runningSum + ", cell=" + previousIncrement);
       }
@@ -243,9 +271,26 @@ class IncrementSummingScanner implements RegionScanner {
 
     boolean hasMore = baseScanner.hasMore();
     if (LOG.isTraceEnabled()) {
-      LOG.trace("nextInternal done with limit=" + limit + " hasMore=" + hasMore);
+      LOG.trace("nextInternal done with limit=" + getBatch() + " hasMore=" + hasMore);
     }
     return hasMore;
+  }
+
+  /**
+   * Gets the batch limit from the given {@link ScannerContext} through reflection.
+   */
+  private int getBatchLimit(ScannerContext scannerContext) {
+    // We need to to access the batch limit (limit on number of columns) in the ScannerContext.
+    // The ScannerContext does not exposes its method to get the limits and has it as an integer inside a classs
+    // LimitFields. So get this through reflection. Also, we cannot depend on the limit tracking of the
+    // internal scanner as it does not differentiate between an increment cell and a non-increment cell.
+    // So, we read all the cells from the internal scanner in batches of limit and do the tracking for columns
+    // by ourselves.
+    try {
+      return (Integer) GET_BATCH_METHOD.invoke(SCANNER_CONTEXT_LIMITS_FIELD.get(scannerContext));
+    } catch (Exception e) {
+      throw e instanceof RuntimeException ? (RuntimeException) e : new RuntimeException(e);
+    }
   }
 
   private boolean sameCell(Cell first, Cell second) {
@@ -301,16 +346,17 @@ class IncrementSummingScanner implements RegionScanner {
      * Returns the next available cell for the current row, without advancing the pointer.  Calling this method
      * multiple times in a row will continue to return the same cell.
      *
-     * @param limit the limit of number of cells to return if the next batch must be fetched by the wrapped scanner
+     * @param scannerContext The {@link ScannerContext} instance encapsulating all limits that should
+     * be tracked.
      * @return the next available cell or null if no more cells are available for the current row
      * @throws IOException
      */
-    public Cell peekNextCell(int limit) throws IOException {
+    public Cell peekNextCell(ScannerContext scannerContext) throws IOException {
       if (currentIdx >= cellsToConsume.size()) {
         // finished current batch
         cellsToConsume.clear();
         currentIdx = 0;
-        hasMore = scanner.next(cellsToConsume, limit);
+        hasMore = scanner.next(cellsToConsume, scannerContext);
       }
       Cell cell = null;
       if (currentIdx < cellsToConsume.size()) {
@@ -330,12 +376,13 @@ class IncrementSummingScanner implements RegionScanner {
      * Returns the next available cell for the current row and advances the pointer to the next cell.  This method
      * can be called multiple times in a row to advance through all the available cells.
      *
-     * @param limit the limit of number of cells to return if the next batch must be fetched by the wrapped scanner
+     * @param scannerContext The {@link ScannerContext} instance encapsulating all limits that should
+     * be tracked.
      * @return the next available cell or null if no more cells are available for the current row
      * @throws IOException
      */
-    public Cell nextCell(int limit) throws IOException {
-      Cell cell = peekNextCell(limit);
+    public Cell nextCell(ScannerContext scannerContext) throws IOException {
+      Cell cell = peekNextCell(scannerContext);
       if (cell != null) {
         currentIdx++;
       }
