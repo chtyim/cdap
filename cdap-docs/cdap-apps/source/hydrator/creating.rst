@@ -46,21 +46,38 @@ configuration for a Batch Application that runs every minute, reading data from 
       "config": {
         "schedule": "\* \* \* \* \*",
         "source": {
-          "name": "Stream",
-          "properties": {  
-            "name": "myStream",
-            "duration": "1m"
-          }
+          "name": "streamSource",
+           "plugin": {
+                "name": "Stream",
+                "artifact": {
+                    "name": "plugin-jar",
+                    "version": "|version|",
+                    "scope": "SYSTEM"
+                },
+                "properties": {
+                  "name": "myStream",
+                  "duration": "1m"
+                }
+           }
         },
         "transforms": [ ],
         "sinks": [
           {
-            "name": "Table",
-            "properties": {
-              "name": "myTable",
-              "schema.row.field": "ts"
+            "name": "tableSink",
+            "plugin": {
+              "name": "Table",
+              "properties": {
+                "name": "myTable",
+                "schema.row.field": "ts"
+              }
             }
           }
+        ],
+        "connections": [
+            {
+                "from": "streamSource",
+                "to": "tableSink"
+            }
         ]
       }
     }
@@ -106,30 +123,49 @@ stream after performing a projection transformation:
       "config": {
         "instances": 1,
         "source": {
-          "name": "Twitter",
-          "properties": {  
-            "AccessToken": "xxx",
-            "AccessTokenSecret": "xxx",
-            "ConsumerKey": "xxx",
-            "ConsumerSecret": "xxx"                                         
+          "name": "twitterSource",
+          "plugin": {
+            "name": "Twitter",
+            "properties": {
+              "AccessToken": "xxx",
+              "AccessTokenSecret": "xxx",
+              "ConsumerKey": "xxx",
+              "ConsumerSecret": "xxx"
+            }
           }
         },
         "transforms": [
           {
-            "name": "Projection",
-            "properties": {
-              "drop": "lang,time,favCount,source,geoLat,geoLong,isRetweet"
+            "name": "dropProjector",
+            "plugin": {
+              "name": "Projection",
+              "properties": {
+                "drop": "lang,time,favCount,source,geoLat,geoLong,isRetweet"
+              }
             }
           }
         ],
         "sinks": [
           {
-            "name": "Stream",
-            "properties": {
-              "name": "twitterStream",
-              "body.field": "tweet"
+            "name": "streamSink",
+            "plugin": {
+              "name": "Stream",
+              "properties": {
+                "name": "twitterStream",
+                "body.field": "tweet"
+              }
             }
           }
+        ],
+        "connections": [
+            {
+                "from": "twitterSource",
+                "to": "dropProjector"
+            },
+            {
+                "from": "dropProjector",
+                "to": "streamSink"
+            }
         ]
       }
     }
@@ -166,33 +202,45 @@ Sample Application Configurations
       "config": {
         "schedule": "\* \* \* \* \*",
         "source": {
-          "name": "Database",
-          "properties": {
-            "importQuery": "select id,name,age from my_table",
-            "countQuery": "select count(id) from my_table",
-            "connectionString": "jdbc:mysql://localhost:3306/test",
-            "tableName": "src_table",
-            "user": "my_user",
-            "password": "my_password",
-            "jdbcPluginName": "jdbc_plugin_name_defined_in_jdbc_plugin_json_config",
-            "jdbcPluginType": "jdbc_plugin_type_defined_in_jdbc_plugin_json_config"
-          }
-        },
-        "sinks": [
-          {
+          "name": "databaseSource",
+          "plugin": {
             "name": "Database",
             "properties": {
-              "columns": "id,name,age",
+              "importQuery": "select id,name,age from my_table",
+              "countQuery": "select count(id) from my_table",
               "connectionString": "jdbc:mysql://localhost:3306/test",
-              "tableName": "dest_table",
+              "tableName": "src_table",
               "user": "my_user",
               "password": "my_password",
               "jdbcPluginName": "jdbc_plugin_name_defined_in_jdbc_plugin_json_config",
               "jdbcPluginType": "jdbc_plugin_type_defined_in_jdbc_plugin_json_config"
             }
           }
+        },
+        "sinks": [
+          {
+            "name": "databaseSink",
+            "plugin": {
+              "name": "Database",
+              "properties": {
+                "columns": "id,name,age",
+                "connectionString": "jdbc:mysql://localhost:3306/test",
+                "tableName": "dest_table",
+                "user": "my_user",
+                "password": "my_password",
+                "jdbcPluginName": "jdbc_plugin_name_defined_in_jdbc_plugin_json_config",
+                "jdbcPluginType": "jdbc_plugin_type_defined_in_jdbc_plugin_json_config"
+              }
+            }
+          }
         ],
-        "transforms": [ ]
+        "transforms": [ ],
+        "connections": [
+            {
+                "from": "databaseSource",
+                "to": "databaseSink"
+            }
+        ]
       }
     }
   
@@ -211,23 +259,35 @@ creating the source:
       "config": {
         "instances": 1,
         "source": {
-          "name": "Kafka",
-          "properties": {
-            "kafka.partitions": "1",
-            "kafka.topic": "test",
-            "kafka.brokers": "localhost:9092"
+          "name": "kafkaSource",
+          "plugin": {
+            "name": "Kafka",
+            "properties": {
+              "kafka.partitions": "1",
+              "kafka.topic": "test",
+              "kafka.brokers": "localhost:9092"
+            }
           }
         },
         "sinks": [
           {
-            "name": "Stream",
-            "properties": {
-              "name": "myStream",
-              "body.field": "message"
+            "name": "streamSink",
+            "plugin": {
+              "name": "Stream",
+              "properties": {
+                "name": "myStream",
+                "body.field": "message"
+              }
             }
           }
         ],
-        "transforms": [ ]
+        "transforms": [ ],
+        "connections": [
+            {
+                "from": "kafkaSource",
+                "to": "streamSink"
+            }
+        ]
       }
     }
 

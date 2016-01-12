@@ -105,50 +105,69 @@ To do this, write the following JSON to a config file::
       "config": {
           "schedule": "*/10 * * * *",
           "source": {
-              "name": "Stream",
-              "properties": {
-                  "name": "trades",
-                  "duration": "10m",
-                  "format": "csv",
-                  "schema": "{
-                      \"type\":\"record\",
-                      \"name\":\"purchase\",
-                      \"fields\":[
-                          {\"name\":\"ticker\",\"type\":\"string\"},
-                          {\"name\":\"price\",\"type\":\"double\"},
-                          {\"name\":\"trades\",\"type\":\"int\"}
-                      ]
-                  }",
-                  "format.setting.delimiter":","
-              }
-          },
-          "transforms": [
-              {
-                  "name": "Projection",
-                  "properties": {
-                      "drop": "headers"
-                  }
-              }
-          ],
-          "sinks": [
-            {
-                "name": "TPFSAvro",
+              "name": "tradeStream",
+              "plugin": {
+                "name": "Stream",
                 "properties": {
-                    "name": "trades_converted",
+                    "name": "trades",
+                    "duration": "10m",
+                    "format": "csv",
                     "schema": "{
                         \"type\":\"record\",
                         \"name\":\"purchase\",
                         \"fields\":[
-                            {\"name\":\"ts\",\"type\":\"long\"},
                             {\"name\":\"ticker\",\"type\":\"string\"},
                             {\"name\":\"price\",\"type\":\"double\"},
                             {\"name\":\"trades\",\"type\":\"int\"}
                         ]
                     }",
-                    "basePath": "trades_converted"
+                    "format.setting.delimiter":","
+                }
+              }
+          },
+          "transforms": [
+              {
+                  "name": "dropHeadersTransform",
+                  "plugin": {
+                    "name": "Projection",
+                    "properties": {
+                        "drop": "headers"
+                    }
+                  }
+              }
+          ],
+          "sinks": [
+            {
+                "name": "tpfsAvroSink",
+                "plugin": {
+                  "name": "TPFSAvro",
+                  "properties": {
+                      "name": "trades_converted",
+                      "schema": "{
+                          \"type\":\"record\",
+                          \"name\":\"purchase\",
+                          \"fields\":[
+                              {\"name\":\"ts\",\"type\":\"long\"},
+                              {\"name\":\"ticker\",\"type\":\"string\"},
+                              {\"name\":\"price\",\"type\":\"double\"},
+                              {\"name\":\"trades\",\"type\":\"int\"}
+                          ]
+                      }",
+                      "basePath": "trades_converted"
+                  }
                 }
             }
-          ]    
+          ],
+          "connections": [
+            {
+                  "from": "tradeStream",
+                  "to": "dropHeadersTransform"
+            },
+            {
+                  "from": "dropHeadersTransform",
+                  "to": "tpfsAvroSink"
+            }
+          ]
       }
   }
 
