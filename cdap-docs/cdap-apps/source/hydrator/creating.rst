@@ -86,6 +86,12 @@ The application launches a MapReduce program that runs every minute, reads data 
 stream *myStream* and writes to a Table *myTable*. A Table Sink needs a row key field to
 be specified and can use the timestamp of a Stream event for that.
 
+Pipeline config consists of stages - source, zero (or) more transforms and one (or) more sinks.
+Each of these stages are identified by a unique name and plugin.
+Plugin object consists of plugin-name, properties map and optionally can specify the artifact.
+connections field in config defines the connections between the stages and the pipeline defined by these connections
+have to be a directed-acyclic-graph.
+
 To create this application, called *streamETLApp*:
 
 - Using the :ref:`Lifecycle RESTful API <http-restful-api-lifecycle-create-app>`::
