@@ -47,18 +47,18 @@ configuration for a Batch Application that runs every minute, reading data from 
         "schedule": "\* \* \* \* \*",
         "source": {
           "name": "streamSource",
-           "plugin": {
-                "name": "Stream",
-                "artifact": {
-                    "name": "plugin-jar",
-                    "version": "|version|",
-                    "scope": "SYSTEM"
-                },
-                "properties": {
-                  "name": "myStream",
-                  "duration": "1m"
-                }
-           }
+          "plugin": {
+            "name": "Stream",
+            "artifact": {
+              "name": "core-plugins",
+              "version": "|version|",
+              "scope": "SYSTEM"
+            },
+            "properties": {
+              "name": "myStream",
+              "duration": "1m"
+            }
+          }
         },
         "transforms": [ ],
         "sinks": [
@@ -74,10 +74,10 @@ configuration for a Batch Application that runs every minute, reading data from 
           }
         ],
         "connections": [
-            {
-                "from": "streamSource",
-                "to": "tableSink"
-            }
+          {
+            "from": "streamSource",
+            "to": "tableSink"
+          }
         ]
       }
     }
@@ -158,14 +158,14 @@ stream after performing a projection transformation:
           }
         ],
         "connections": [
-            {
-                "from": "twitterSource",
-                "to": "dropProjector"
-            },
-            {
-                "from": "dropProjector",
-                "to": "streamSink"
-            }
+          {
+            "from": "twitterSource",
+            "to": "dropProjector"
+          },
+          {
+            "from": "dropProjector",
+            "to": "streamSink"
+          }
         ]
       }
     }
@@ -236,10 +236,10 @@ Sample Application Configurations
         ],
         "transforms": [ ],
         "connections": [
-            {
-                "from": "databaseSource",
-                "to": "databaseSink"
-            }
+          {
+            "from": "databaseSource",
+            "to": "databaseSink"
+          }
         ]
       }
     }
@@ -283,10 +283,10 @@ creating the source:
         ],
         "transforms": [ ],
         "connections": [
-            {
-                "from": "kafkaSource",
-                "to": "streamSink"
-            }
+          {
+            "from": "kafkaSource",
+            "to": "streamSink"
+          }
         ]
       }
     }

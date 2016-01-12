@@ -101,74 +101,74 @@ stream events and writes those events into files on HDFS that can then be querie
 To do this, write the following JSON to a config file::
 
   {
-      "description": "Periodically reads stream data and writes it to a TimePartitionedFileSet",
-      "config": {
-          "schedule": "*/10 * * * *",
-          "source": {
-              "name": "tradeStream",
-              "plugin": {
-                "name": "Stream",
-                "properties": {
-                    "name": "trades",
-                    "duration": "10m",
-                    "format": "csv",
-                    "schema": "{
-                        \"type\":\"record\",
-                        \"name\":\"purchase\",
-                        \"fields\":[
-                            {\"name\":\"ticker\",\"type\":\"string\"},
-                            {\"name\":\"price\",\"type\":\"double\"},
-                            {\"name\":\"trades\",\"type\":\"int\"}
-                        ]
-                    }",
-                    "format.setting.delimiter":","
-                }
-              }
-          },
-          "transforms": [
-              {
-                  "name": "dropHeadersTransform",
-                  "plugin": {
-                    "name": "Projection",
-                    "properties": {
-                        "drop": "headers"
-                    }
-                  }
-              }
-          ],
-          "sinks": [
-            {
-                "name": "tpfsAvroSink",
-                "plugin": {
-                  "name": "TPFSAvro",
-                  "properties": {
-                      "name": "trades_converted",
-                      "schema": "{
-                          \"type\":\"record\",
-                          \"name\":\"purchase\",
-                          \"fields\":[
-                              {\"name\":\"ts\",\"type\":\"long\"},
-                              {\"name\":\"ticker\",\"type\":\"string\"},
-                              {\"name\":\"price\",\"type\":\"double\"},
-                              {\"name\":\"trades\",\"type\":\"int\"}
-                          ]
-                      }",
-                      "basePath": "trades_converted"
-                  }
-                }
+    "description": "Periodically reads stream data and writes it to a TimePartitionedFileSet",
+    "config": {
+      "schedule": "*/10 * * * *",
+      "source": {
+        "name": "tradeStream",
+        "plugin": {
+          "name": "Stream",
+          "properties": {
+            "name": "trades",
+            "duration": "10m",
+            "format": "csv",
+            "schema": "{
+              \"type\":\"record\",
+              \"name\":\"purchase\",
+              \"fields\":[
+                {\"name\":\"ticker\",\"type\":\"string\"},
+                {\"name\":\"price\",\"type\":\"double\"},
+                {\"name\":\"trades\",\"type\":\"int\"}
+              ]
+            }",
+            "format.setting.delimiter":","
+          }
+        }
+      },
+      "transforms": [
+        {
+          "name": "dropHeadersTransform",
+          "plugin": {
+            "name": "Projection",
+            "properties": {
+              "drop": "headers"
             }
-          ],
-          "connections": [
-            {
-                  "from": "tradeStream",
-                  "to": "dropHeadersTransform"
-            },
-            {
-                  "from": "dropHeadersTransform",
-                  "to": "tpfsAvroSink"
+          }
+        }
+      ],
+      "sinks": [
+        {
+          "name": "tpfsAvroSink",
+          "plugin": {
+            "name": "TPFSAvro",
+            "properties": {
+              "name": "trades_converted",
+              "schema": "{
+                \"type\":\"record\",
+                \"name\":\"purchase\",
+                \"fields\":[
+                  {\"name\":\"ts\",\"type\":\"long\"},
+                  {\"name\":\"ticker\",\"type\":\"string\"},
+                  {\"name\":\"price\",\"type\":\"double\"},
+                  {\"name\":\"trades\",\"type\":\"int\"}
+                ]
+              }",
+              "basePath": "trades_converted"
             }
-          ]
-      }
+          }
+        }
+      ],
+      "connections": [
+        {
+          "from": "tradeStream",
+          "to": "dropHeadersTransform"
+        },
+        {
+          "from": "dropHeadersTransform",
+          "to": "tpfsAvroSink"
+        }
+      ]
+    }
   }
 
 **Note:** The above JSON has been re-formatted to fit and requires editing (remove the line endings added to
