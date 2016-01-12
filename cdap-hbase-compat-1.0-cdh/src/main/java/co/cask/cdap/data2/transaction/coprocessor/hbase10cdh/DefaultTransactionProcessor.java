@@ -16,6 +16,7 @@
 
 package co.cask.cdap.data2.transaction.coprocessor.hbase10cdh;
 
+import co.cask.cdap.data2.increment.hbase10cdh.Filters;
 import co.cask.cdap.data2.increment.hbase10cdh.IncrementFilter;
 import co.cask.cdap.data2.transaction.coprocessor.DefaultTransactionStateCacheSupplier;
 import co.cask.cdap.data2.util.hbase.HTable10CDHNameConverter;
@@ -42,7 +43,8 @@ public class DefaultTransactionProcessor extends TransactionProcessor {
   }
 
   @Override
-  protected Filter getTransactionFilter(Transaction tx, ScanType scanType) {
-    return new TransactionVisibilityFilter(tx, ttlByFamily, allowEmptyValues, scanType, new IncrementFilter());
+  protected Filter getTransactionFilter(Transaction tx, ScanType scanType, Filter filter) {
+    return new TransactionVisibilityFilter(tx, ttlByFamily, allowEmptyValues, scanType,
+                                           Filters.combine(new IncrementFilter(), filter));
   }
 }
