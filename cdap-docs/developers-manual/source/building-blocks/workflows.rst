@@ -208,6 +208,11 @@ Once a run is completed, you can query the tokens from past workflow runs for an
 determine which node was executed more frequently and when. You can retrieve the token values
 that were added by a specific node in the workflow to debug the flow of execution.
 
+When the action is started by the Workflow, it always receives non-null instance of the WorkflowToken.
+However MapReduce and Spark programs can also be started directly, in that case the WorkflowToken
+received from the context of the program would be null. Since custom actions always run by the Workflow,
+they always receive the non-null WorkflowToken instance.
+
 Scope
 -----
 Two scopes |---| *System* and *User* |---| are provided for workflow keys. CDAP adds keys
@@ -479,10 +484,6 @@ where ``MyPredicate`` is a public class which implements the ``Predicate`` inter
   public static class MyPredicate implements Predicate<WorkflowContext> {
     @Override
     public boolean apply(@Nullable WorkflowContext context) {
-      if (context == null) {
-        return false;
-      }
-
       WorkflowToken token = context.getToken();
       int productProfiles = token.get("Profile.Product").getAsInt();
       int userProfiles = token.get("Profile.User").getAsInt();
