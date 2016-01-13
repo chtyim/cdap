@@ -261,7 +261,7 @@ MapReduce program::
   String counterGroupName = "org.apache.hadoop.mapreduce.TaskCounter";
   String counterName = "MAP_INPUT_RECORDS";
   String counterKey = counterGroupName + "." + counterName;
-  String counterValue = workflowToken.get(counterKey, "PurchaseHistoryBuilder", WorkflowToken.Scope.SYSTEM);
+  long counterValue = workflowToken.get(counterKey, "PurchaseHistoryBuilder", WorkflowToken.Scope.SYSTEM).getAsLong();
 
 Applications can define the counters using ``enum`` as::
 
@@ -280,7 +280,7 @@ These counters can be retrieved from the workflow token by using a key composed 
   String counterGroupName = MY_COUNTER.class.getName();
   String counterName = "BY_TYPE";
   String counterKey = counterGroupName + "." + counterName;
-  String counterValue = workflowToken.get(counterKey, "PurchaseHistoryBuilder", WorkflowToken.Scope.SYSTEM);
+  long counterValue = workflowToken.get(counterKey, "PurchaseHistoryBuilder", WorkflowToken.Scope.SYSTEM).getAsLong();
 
 Applications can also define counters by explicitly providing the counter group name and counter name as::
 
@@ -292,7 +292,7 @@ counter group name, followed by a ".", followed by the explicitly provided name 
   String counterGroupName = "MyCounterGroup";
   String counterName = "MyCounter";
   String counterKey = counterGroupName + "." + counterName;
-  String counterValue = workflowToken.get(counterKey, "PurchaseHistoryBuilder", WorkflowToken.Scope.SYSTEM);
+  long counterValue = workflowToken.get(counterKey, "PurchaseHistoryBuilder", WorkflowToken.Scope.SYSTEM).getAsLong();
 
 Spark Accumulators and Workflow Tokens
 --------------------------------------
@@ -478,12 +478,12 @@ where ``MyPredicate`` is a public class which implements the ``Predicate`` inter
 
   public static class MyPredicate implements Predicate<WorkflowContext> {
     @Override
-    public boolean apply(@Nullable WorkflowContext input) {
-      if (input == null) {
+    public boolean apply(@Nullable WorkflowContext context) {
+      if (context == null) {
         return false;
       }
 
-      WorkflowToken token = input.getToken();
+      WorkflowToken token = context.getToken();
       int productProfiles = token.get("Profile.Product").getAsInt();
       int userProfiles = token.get("Profile.User").getAsInt();
 
@@ -497,7 +497,7 @@ where ``MyPredicate`` is a public class which implements the ``Predicate`` inter
     }
   }
 
-In the ``JoinWithCatalogMR`` MapReduce, it could have in its Mapper class code that 
+The mapper of the ``JoinWithCatalogMR`` MapReduce can have a code that
 governs which condition to follow. Note that as the context passed is a standard
 Hadoop context, the ``WorkflowContext`` is not available::
 
@@ -570,16 +570,16 @@ and from within a workflow with a predicate, fork and joins::
     // "true" if true branch will be executed or "false" otherwise. In "StatusReporter" in
     // order to get which branch in the Workflow was executed, use:
     
-    boolean bTrueBranch = token.getAsBoolean("branch");
+    boolean bTrueBranch = token.get("branch").getAsBoolean();
  
     // Use case 2: You may want to compare the records emitted by "PurchaseByCustomer"
     // and "PurchaseByProduct", in order to find which job is generating more records:
     
-    String flattenReduceOutputRecordsCounterName = "org.apache.hadoop.mapreduce.TaskCounter.REDUCE_OUTPUT_RECORDS";
-    String purchaseByCustomerCounterValue = token.get(flattenReduceOutputRecordsCounterName, "PurchaseByCustomer", 
-                                                      WorkflowToken.Scope.SYSTEM);
-    String purchaseByProductCounterValue = token.get(flattenReduceOutputRecordsCounterName, "PurchaseByProduct", 
-                                                     WorkflowToken.Scope.SYSTEM);
+    String reduceOutputRecordsCounterName = "org.apache.hadoop.mapreduce.TaskCounter.REDUCE_OUTPUT_RECORDS";
+    long purchaseByCustomerCounterValue = token.get(reduceOutputRecordsCounterName, "PurchaseByCustomer",
+                                                    WorkflowToken.Scope.SYSTEM).getAsLong();
+    long purchaseByProductCounterValue = token.get(reduceOutputRecordsCounterName, "PurchaseByProduct",
+                                                   WorkflowToken.Scope.SYSTEM).getAsLong();
   
     // Use case 3: Since Workflow can have multiple complex conditions and forks in its
     // structure, in the "StatusReporter", you may want to know how many actions were
@@ -595,16 +595,16 @@ and from within a workflow with a predicate, fork and joins::
     int customActionNodes = 0;
     int conditions = 0;
     for (NodeValue entry : nodeValues) {
-      if (entry.getValue().equals("MAPREDUCE")) {
+      if (entry.getValue().toString().equals("MAPREDUCE")) {
         mapReduceNodes++;
       }
-      if (entry.getValue().equals("SPARK")) {
+      if (entry.getValue().toString().equals("SPARK")) {
         sparkNodes++;
       }
-      if (entry.getValue().equals("CUSTOM_ACTION")) {
+      if (entry.getValue().toString().equals("CUSTOM_ACTION")) {
         customActionNodes++;
       }
-      if (entry.getValue().equals("CONDITION")) {
+      if (entry.getValue().toString().equals("CONDITION")) {
         conditions++;
       }
     }
@@ -614,24 +614,24 @@ and from within a workflow with a predicate, fork and joins::
     // To get the name of the last node which set the "ERROR" flag in the WorkflowToken:
     
     List<NodeValue> errorNodeValueList = token.getAll("ERROR");
-    String nodeNameWhoSetTheErrorFlagLast = errorNodeValueList.get(errorNodeValueList.size() - 1);
+    String nodeNameWhoSetTheErrorFlagLast = errorNodeValueList.get(errorNodeValueList.size() - 1).getNodeName();
  
     // To get the start time of the MapReduce program with unique name "PurchaseHistoryBuilder":
     
-    String startTime = token.get("start.time", "PurchaseHistoryBuilder");
+    String startTime = token.get("start.time", "PurchaseHistoryBuilder").toString();
  
     // To get the most recent value of the counter with group name
     // 'org.apache.hadoop.mapreduce.TaskCounter' and counter name 'MAP_INPUT_RECORDS':
    
-    String flattenCounterKey = "org.apache.hadoop.mapreduce.TaskCounter.MAP_INPUT_RECORDS";
-    int records = workflowToken.get(flattenCounterKey, WorkflowToken.Scope.SYSTEM).getAsInt();
+    String counterKey = "org.apache.hadoop.mapreduce.TaskCounter.MAP_INPUT_RECORDS";
+    long records = workflowToken.get(counterKey, WorkflowToken.Scope.SYSTEM).getAsLong();
  
     // To get the value of the counter with group name
     // 'org.apache.hadoop.mapreduce.TaskCounter' and counter name 'MAP_INPUT_RECORDS' as
     // set by a MapReduce program with the unique name 'PurchaseHistoryBuilder':
     
-    int recordsPHB = workflowToken.get(flattenCounterKey, "PurchaseHistoryBuilder",
-    WorkflowToken.Scope.SYSTEM).getAsInt();
+    long recordsPHB = workflowToken.get(counterKey, "PurchaseHistoryBuilder",
+    WorkflowToken.Scope.SYSTEM).getAsLong();
    ...
   }
 
