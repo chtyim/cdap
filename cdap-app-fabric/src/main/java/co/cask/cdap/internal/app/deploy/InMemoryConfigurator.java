@@ -66,6 +66,7 @@ public final class InMemoryConfigurator implements Configurator {
   /**
    * JAR file path.
    */
+  private final Id.Namespace namespace;
   private final Location artifact;
   private final CConfiguration cConf;
   private final String configString;
@@ -79,17 +80,19 @@ public final class InMemoryConfigurator implements Configurator {
   private String appClassName;
   private Id.Artifact artifactId;
 
-  public InMemoryConfigurator(CConfiguration cConf, Id.Artifact artifactId, String appClassName,
+  public InMemoryConfigurator(CConfiguration cConf, Id.Namespace namespace, Id.Artifact artifactId, String appClassName,
                               Location artifact, @Nullable String configString, ArtifactRepository artifactRepository) {
-    this(cConf, artifact, configString);
+    this(cConf, namespace, artifact, configString);
     this.artifactId = artifactId;
     this.appClassName = appClassName;
     this.artifactRepository = artifactRepository;
   }
 
   // remove once app templates are gone
-  public InMemoryConfigurator(CConfiguration cConf, Location artifact, @Nullable String configString) {
+  public InMemoryConfigurator(CConfiguration cConf, Id.Namespace namespace,
+                              Location artifact, @Nullable String configString) {
     Preconditions.checkNotNull(artifact);
+    this.namespace = namespace;
     this.artifact = artifact;
     this.configString = configString;
     this.cConf = cConf;
@@ -162,8 +165,8 @@ public final class InMemoryConfigurator implements Configurator {
     try (PluginInstantiator pluginInstantiator = new PluginInstantiator(
       cConf, app.getClass().getClassLoader(), tempDir)) {
       configurer = artifactId == null ?
-        new DefaultAppConfigurer(app, configString) :
-        new DefaultAppConfigurer(artifactId, app, configString, artifactRepository, pluginInstantiator);
+        new DefaultAppConfigurer(namespace, app, configString) :
+        new DefaultAppConfigurer(namespace, artifactId, app, configString, artifactRepository, pluginInstantiator);
 
       Config appConfig;
       Type configType = Artifacts.getConfigType(app.getClass());

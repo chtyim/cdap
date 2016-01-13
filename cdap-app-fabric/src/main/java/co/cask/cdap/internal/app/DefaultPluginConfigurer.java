@@ -50,9 +50,11 @@ public class DefaultPluginConfigurer extends DefaultDatasetConfigurer implements
   private final ArtifactRepository artifactRepository;
   private final PluginInstantiator pluginInstantiator;
   private final Map<String, Plugin> plugins;
+  protected final Id.Namespace namespace;
 
-  public DefaultPluginConfigurer(Id.Artifact artifactId,
+  public DefaultPluginConfigurer(Id.Namespace namespace, Id.Artifact artifactId,
                                  ArtifactRepository artifactRepository, PluginInstantiator pluginInstantiator) {
+    this.namespace = namespace;
     this.artifactId = artifactId;
     this.artifactRepository = artifactRepository;
     this.pluginInstantiator = pluginInstantiator;
@@ -151,7 +153,7 @@ public class DefaultPluginConfigurer extends DefaultDatasetConfigurer implements
 
     Map.Entry<ArtifactDescriptor, PluginClass> pluginEntry;
     try {
-      pluginEntry = artifactRepository.findPlugin(artifactId, pluginType, pluginName, selector);
+      pluginEntry = artifactRepository.findPlugin(namespace, artifactId, pluginType, pluginName, selector);
     } catch (IOException e) {
       throw Throwables.propagate(e);
     }
