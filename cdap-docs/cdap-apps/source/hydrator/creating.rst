@@ -86,20 +86,24 @@ The application launches a MapReduce program that runs every minute, reads data 
 stream *myStream* and writes to a Table *myTable*. A Table Sink needs a row key field to
 be specified and can use the timestamp of a Stream event for that.
 
-Pipeline config consists of stages - source, zero (or) more transforms and one (or) more sinks.
-Each of these stages are identified by a unique name and plugin.
-Plugin object consists of plugin-name, properties map and optionally can specify the artifact.
-connections field in config defines the connections between the stages and the pipeline defined by these connections
-have to be a directed-acyclic-graph.
+A pipeline configuration consists of stages and connections. The stages consist of a single
+source, zero (or) more transforms and one (or more) sink(s). Each of these stages is 
+identified by a unique name and plugin.
 
-To create this application, called *streamETLApp*:
+A plugin object is specified by a plugin-name, a properties map and can optionally specify the artifact.
+If the artifact is not specified, the application will choose the artifact with the highest version.
+
+The connections field in the configuration defines the connections between the stages. 
+The pipeline defined by these connections must be a directed acyclic graph (or DAG).
+
+To create this application, called *streamETLApp*, you can use either the HTTP RESTful API or the CDAP CLI.
 
 - Using the :ref:`Lifecycle RESTful API <http-restful-api-lifecycle-create-app>`::
 
     $ curl -w'\n' -X PUT localhost:10000/v3/namespaces/default/apps/streamETLApp \
         -H 'Content-Type: application/json' -d @config.json 
 
-- Using :ref:`CDAP CLI <cli>`:
+- Using the :ref:`CDAP CLI <cli>`:
 
   .. container:: highlight
 
