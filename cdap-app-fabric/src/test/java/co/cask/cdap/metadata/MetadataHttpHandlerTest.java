@@ -143,9 +143,17 @@ public class MetadataHttpHandlerTest extends MetadataTestBase {
     );
     Assert.assertEquals(expected, searchProperties);
 
-    // test search for view
+    // test search for view with lowercase key value when metadata was stored in mixed case
     searchProperties = searchMetadata(Id.Namespace.DEFAULT,
-                                      "viewKey:viewValue", MetadataSearchTargetType.VIEW);
+                                      "viewkey:viewvalue", MetadataSearchTargetType.VIEW);
+    expected = ImmutableSet.of(
+      new MetadataSearchResultRecord(myview)
+    );
+    Assert.assertEquals(expected, searchProperties);
+
+    // test search for view with lowercase value when metadata was stored in mixed case
+    searchProperties = searchMetadata(Id.Namespace.DEFAULT,
+                                      "viewvalue", MetadataSearchTargetType.VIEW);
     expected = ImmutableSet.of(
       new MetadataSearchResultRecord(myview)
     );
@@ -285,9 +293,9 @@ public class MetadataHttpHandlerTest extends MetadataTestBase {
     );
 
     Assert.assertEquals(expected, searchTags);
-    // test search for view
+    // test search for view with lowercase tag when metadata was stored in mixed case
     searchTags =
-      searchMetadata(Id.Namespace.DEFAULT, "viewT", MetadataSearchTargetType.VIEW);
+      searchMetadata(Id.Namespace.DEFAULT, "viewtag", MetadataSearchTargetType.VIEW);
     expected = ImmutableSet.of(
       new MetadataSearchResultRecord(myview)
     );
