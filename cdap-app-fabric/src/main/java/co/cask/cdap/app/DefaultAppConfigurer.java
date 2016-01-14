@@ -121,7 +121,7 @@ public class DefaultAppConfigurer extends DefaultPluginConfigurer implements App
   @Override
   public void addMapReduce(MapReduce mapReduce) {
     Preconditions.checkArgument(mapReduce != null, "MapReduce cannot be null.");
-    DefaultMapReduceConfigurer configurer = new DefaultMapReduceConfigurer(mapReduce, namespace, artifactId,
+    DefaultMapReduceConfigurer configurer = new DefaultMapReduceConfigurer(mapReduce, deployNamespace, artifactId,
                                                                            artifactRepository,
                                                                            pluginInstantiator);
     mapReduce.configure(configurer);
@@ -137,7 +137,7 @@ public class DefaultAppConfigurer extends DefaultPluginConfigurer implements App
   @Override
   public void addSpark(Spark spark) {
     Preconditions.checkArgument(spark != null, "Spark cannot be null.");
-    DefaultSparkConfigurer configurer = new DefaultSparkConfigurer(spark, namespace, artifactId,
+    DefaultSparkConfigurer configurer = new DefaultSparkConfigurer(spark, deployNamespace, artifactId,
                                                                    artifactRepository,
                                                                    pluginInstantiator);
     spark.configure(configurer);
@@ -161,7 +161,7 @@ public class DefaultAppConfigurer extends DefaultPluginConfigurer implements App
 
   public void addService(Service service) {
     Preconditions.checkArgument(service != null, "Service cannot be null.");
-    DefaultServiceConfigurer configurer = new DefaultServiceConfigurer(service, namespace, artifactId,
+    DefaultServiceConfigurer configurer = new DefaultServiceConfigurer(service, deployNamespace, artifactId,
                                                                        artifactRepository, pluginInstantiator);
     service.configure(configurer);
 
@@ -176,7 +176,7 @@ public class DefaultAppConfigurer extends DefaultPluginConfigurer implements App
   @Override
   public void addWorker(Worker worker) {
     Preconditions.checkArgument(worker != null, "Worker cannot be null.");
-    DefaultWorkerConfigurer configurer = new DefaultWorkerConfigurer(worker, namespace, artifactId,
+    DefaultWorkerConfigurer configurer = new DefaultWorkerConfigurer(worker, deployNamespace, artifactId,
                                                                      artifactRepository,
                                                                      pluginInstantiator);
     worker.configure(configurer);

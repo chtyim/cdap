@@ -120,7 +120,7 @@ public class DefaultServiceConfigurer extends DefaultPluginConfigurer implements
     Map<String, HttpServiceHandlerSpecification> handleSpecs = Maps.newHashMap();
     for (HttpServiceHandler handler : handlers) {
       DefaultHttpServiceHandlerConfigurer configurer = new DefaultHttpServiceHandlerConfigurer(
-        handler, namespace, artifactId, artifactRepository, pluginInstantiator);
+        handler, deployNamespace, artifactId, artifactRepository, pluginInstantiator);
       handler.configure(configurer);
       HttpServiceHandlerSpecification spec = configurer.createSpecification();
       Preconditions.checkArgument(!handleSpecs.containsKey(spec.getName()),
