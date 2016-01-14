@@ -403,7 +403,7 @@ public class MetadataDataset extends AbstractDataset {
         String targetType = MdsKey.getTargetType(rowKey);
 
         // Filter on target type if not ALL
-        if ((type != MetadataSearchTargetType.ALL) && (!targetType.equals(type.getInternalName()))) {
+        if ((type != MetadataSearchTargetType.ALL) && (!targetType.equals(type.getValue()))) {
           continue;
         }
 

@@ -19,9 +19,11 @@ package co.cask.cdap.proto.metadata;
  * Supported types for metadata search.
  */
 public enum MetadataSearchTargetType {
+  // the custom values are required because these value match the entitiy-type stored as
+  // a part of MDS key.
   ALL("All"),
   ARTIFACT("Artifact"),
-  APPLICATION("Application"),
+  APP("Application"),
   PROGRAM("Program"),
   DATASET("DatasetInstance"),
   STREAM("Stream"),
@@ -29,11 +31,28 @@ public enum MetadataSearchTargetType {
 
   private final String internalName;
 
-  private MetadataSearchTargetType(String internalName) {
+  MetadataSearchTargetType(String internalName) {
     this.internalName = internalName;
   }
 
-  public String getInternalName() {
+  public String getValue() {
     return internalName;
+  }
+
+  @Override
+  public String toString() {
+    return getValue();
+  }
+
+  /**
+   * @return {@link MetadataSearchTargetType} of the given value.
+   */
+  public static MetadataSearchTargetType getEnum(String value) {
+    for (MetadataSearchTargetType metadataSearchTargetType : values()) {
+      if (metadataSearchTargetType.getValue().equalsIgnoreCase(value)) {
+        return metadataSearchTargetType;
+      }
+    }
+    throw new IllegalArgumentException("Enum not found for value: " + value);
   }
 }
