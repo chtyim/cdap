@@ -45,6 +45,13 @@ public class DefaultMetadataAdmin implements MetadataAdmin {
     .or(CharMatcher.is('_')
           .or(CharMatcher.is('-')));
 
+  private static final CharMatcher valueMatcher = CharMatcher.inRange('A', 'Z')
+    .or(CharMatcher.inRange('a', 'z'))
+    .or(CharMatcher.inRange('0', '9'))
+    .or(CharMatcher.is('_')
+          .or(CharMatcher.is('-'))
+          .or(CharMatcher.WHITESPACE));
+
   private final MetadataStore metadataStore;
   private final CConfiguration cConf;
   private final EntityValidator entityValidator;
@@ -166,12 +173,12 @@ public class DefaultMetadataAdmin implements MetadataAdmin {
       validateLength(entityId, entry.getKey());
 
       // validate value
-      validateAllowedFormat(entityId, entry.getValue());
+      validateAllowedValueFormat(entityId, entry.getValue());
       validateLength(entityId, entry.getValue());
     }
   }
 
-  public void validateTags(Id.NamespacedId entityId, String ... tags) throws InvalidMetadataException {
+  private void validateTags(Id.NamespacedId entityId, String... tags) throws InvalidMetadataException {
     for (String tag : tags) {
       validateAllowedFormat(entityId, tag);
       validateLength(entityId, tag);
@@ -193,6 +200,15 @@ public class DefaultMetadataAdmin implements MetadataAdmin {
    */
   private void validateAllowedFormat(Id.NamespacedId entityId, String keyword) throws InvalidMetadataException {
     if (!keywordMatcher.matchesAllOf(keyword)) {
+      throw new InvalidMetadataException(entityId, "Illegal format for the value : " + keyword);
+    }
+  }
+
+  /**
+   * Validate the value of a property matches the {@link #valueMatcher} character test.
+   */
+  private void validateAllowedValueFormat(Id.NamespacedId entityId, String keyword) throws InvalidMetadataException {
+    if (!valueMatcher.matchesAllOf(keyword)) {
       throw new InvalidMetadataException(entityId, "Illegal format for the value : " + keyword);
     }
   }
