@@ -84,7 +84,8 @@ public class MetadataHttpHandlerTest extends MetadataTestBase {
   public void testProperties() throws Exception {
     // should fail because we haven't provided any metadata in the request
     addProperties(application, null, BadRequestException.class);
-    Map<String, String> appProperties = ImmutableMap.of("aKey", "aValue", "aK", "aV");
+    String multiWordValue = "wow1 WoW2   -    WOW3 - wow4_woW5 wow6";
+    Map<String, String> appProperties = ImmutableMap.of("aKey", "aValue", "multiword", multiWordValue);
     addProperties(application, appProperties);
     // should fail because we haven't provided any metadata in the request
     addProperties(pingService, null, BadRequestException.class);
@@ -96,7 +97,8 @@ public class MetadataHttpHandlerTest extends MetadataTestBase {
     addProperties(myds, datasetProperties);
     // should fail because we haven't provided any metadata in the request
     addProperties(mystream, null, BadRequestException.class);
-    Map<String, String> streamProperties = ImmutableMap.of("stKey", "stValue", "stK", "stV");
+    Map<String, String> streamProperties = ImmutableMap.of("stKey", "stValue", "stK", "stV", "multiword",
+                                                           multiWordValue);
     addProperties(mystream, streamProperties);
     addProperties(myview, null, BadRequestException.class);
     Map<String, String> viewProperties = ImmutableMap.of("viewKey", "viewValue", "viewK", "viewV");
@@ -119,10 +121,24 @@ public class MetadataHttpHandlerTest extends MetadataTestBase {
     properties = getProperties(artifactId);
     Assert.assertEquals(artifactProperties, properties);
 
-    // test search for stream
-    Set<MetadataSearchResultRecord> searchProperties = searchMetadata(Id.Namespace.DEFAULT,
-                                                                      "stKey:stValue", MetadataSearchTargetType.STREAM);
+    // test search for application
     Set<MetadataSearchResultRecord> expected = ImmutableSet.of(
+      new MetadataSearchResultRecord(application)
+    );
+    Set<MetadataSearchResultRecord> searchProperties = searchMetadata(Id.Namespace.DEFAULT,
+                                                                      "aKey:aValue",
+                                                                      MetadataSearchTargetType.APPLICATION);
+    Assert.assertEquals(expected, searchProperties);
+    searchProperties = searchMetadata(Id.Namespace.DEFAULT, "multiword:wow1", MetadataSearchTargetType.APPLICATION);
+    Assert.assertEquals(expected, searchProperties);
+    searchProperties = searchMetadata(Id.Namespace.DEFAULT, "multiword:woW5", MetadataSearchTargetType.APPLICATION);
+    Assert.assertEquals(expected, searchProperties);
+    searchProperties = searchMetadata(Id.Namespace.DEFAULT, "WOW3", MetadataSearchTargetType.APPLICATION);
+    Assert.assertEquals(expected, searchProperties);
+
+    // test search for stream
+    searchProperties = searchMetadata(Id.Namespace.DEFAULT, "stKey:stValue", MetadataSearchTargetType.STREAM);
+    expected = ImmutableSet.of(
       new MetadataSearchResultRecord(mystream)
     );
     Assert.assertEquals(expected, searchProperties);
@@ -149,6 +165,16 @@ public class MetadataHttpHandlerTest extends MetadataTestBase {
       new MetadataSearchResultRecord(pingService)
     );
     Assert.assertEquals(expected, searchProperties);
+
+    searchProperties = searchMetadata(Id.Namespace.DEFAULT, "multiword:w*", MetadataSearchTargetType.ALL);
+    Assert.assertEquals(2, searchProperties.size());
+
+    searchProperties = searchMetadata(Id.Namespace.DEFAULT, "multiword:*", MetadataSearchTargetType.ALL);
+    Assert.assertEquals(2, searchProperties.size());
+
+    searchProperties = searchMetadata(Id.Namespace.DEFAULT, "wo*", MetadataSearchTargetType.ALL);
+    Assert.assertEquals(2, searchProperties.size());
+
 
     // search without any target param
     searchProperties = searchMetadata(Id.Namespace.DEFAULT, "sKey:s*", null);
@@ -178,7 +204,8 @@ public class MetadataHttpHandlerTest extends MetadataTestBase {
     removeProperty(myds, "dKey");
     Assert.assertEquals(ImmutableMap.of("dK", "dV"), getProperties(myds));
     removeProperty(mystream, "stK");
-    Assert.assertEquals(ImmutableMap.of("stKey", "stValue"), getProperties(mystream));
+    removeProperty(mystream, "stKey");
+    Assert.assertEquals(ImmutableMap.of("multiword", multiWordValue), getProperties(mystream));
     removeProperty(myview, "viewK");
     Assert.assertEquals(ImmutableMap.of("viewKey", "viewValue"), getProperties(myview));
     // cleanup
@@ -208,7 +235,7 @@ public class MetadataHttpHandlerTest extends MetadataTestBase {
   public void testTags() throws Exception {
     // should fail because we haven't provided any metadata in the request
     addTags(application, null, BadRequestException.class);
-    Set<String> appTags = ImmutableSet.of("aTag", "aT");
+    Set<String> appTags = ImmutableSet.of("aTag", "aT", "Wow-WOW1", "WOW_WOW2");
     addTags(application, appTags);
     // should fail because we haven't provided any metadata in the request
     addTags(pingService, null, BadRequestException.class);
@@ -218,7 +245,7 @@ public class MetadataHttpHandlerTest extends MetadataTestBase {
     Set<String> datasetTags = ImmutableSet.of("dTag", "dT");
     addTags(myds, datasetTags);
     addTags(mystream, null, BadRequestException.class);
-    Set<String> streamTags = ImmutableSet.of("stTag", "stT");
+    Set<String> streamTags = ImmutableSet.of("stTag", "stT", "Wow-WOW1", "WOW_WOW2");
     addTags(mystream, streamTags);
     addTags(myview, null, BadRequestException.class);
     Set<String> viewTags = ImmutableSet.of("viewTag", "viewT");
@@ -246,28 +273,35 @@ public class MetadataHttpHandlerTest extends MetadataTestBase {
     Assert.assertTrue(artifactTags.containsAll(tags));
     // test search for stream
     Set<MetadataSearchResultRecord> searchTags =
-      searchMetadata(Id.Namespace.DEFAULT, "stT*", MetadataSearchTargetType.STREAM);
+      searchMetadata(Id.Namespace.DEFAULT, "stT", MetadataSearchTargetType.STREAM);
     Set<MetadataSearchResultRecord> expected = ImmutableSet.of(
       new MetadataSearchResultRecord(mystream)
     );
     Assert.assertEquals(expected, searchTags);
+
+    searchTags = searchMetadata(Id.Namespace.DEFAULT, "Wow", MetadataSearchTargetType.STREAM);
+    expected = ImmutableSet.of(
+      new MetadataSearchResultRecord(mystream)
+    );
+
+    Assert.assertEquals(expected, searchTags);
     // test search for view
     searchTags =
-      searchMetadata(Id.Namespace.DEFAULT, "viewT*", MetadataSearchTargetType.VIEW);
+      searchMetadata(Id.Namespace.DEFAULT, "viewT", MetadataSearchTargetType.VIEW);
     expected = ImmutableSet.of(
       new MetadataSearchResultRecord(myview)
     );
     Assert.assertEquals(expected, searchTags);
-    // test prefix search, should match stream and service programs
-    searchTags = searchMetadata(Id.Namespace.DEFAULT, "s*", MetadataSearchTargetType.ALL);
+    // test prefix search, should match stream and application
+    searchTags = searchMetadata(Id.Namespace.DEFAULT, "Wo*", MetadataSearchTargetType.ALL);
     expected = ImmutableSet.of(
-      new MetadataSearchResultRecord(mystream),
-      new MetadataSearchResultRecord(pingService)
+      new MetadataSearchResultRecord(application),
+      new MetadataSearchResultRecord(mystream)
     );
     Assert.assertEquals(expected, searchTags);
 
     // search without any target param
-    searchTags = searchMetadata(Id.Namespace.DEFAULT, "s*", null);
+    searchTags = searchMetadata(Id.Namespace.DEFAULT, "Wo*", null);
     Assert.assertEquals(expected, searchTags);
 
     // search non-existent tags should return empty set
@@ -276,7 +310,7 @@ public class MetadataHttpHandlerTest extends MetadataTestBase {
 
     // test removal
     removeTag(application, "aTag");
-    Assert.assertEquals(ImmutableSet.of("aT"), getTags(application));
+    Assert.assertEquals(ImmutableSet.of("aT", "Wow-WOW1", "WOW_WOW2"), getTags(application));
     removeTags(pingService);
     Assert.assertTrue(getTags(pingService).isEmpty());
     removeTags(pingService);
@@ -285,6 +319,8 @@ public class MetadataHttpHandlerTest extends MetadataTestBase {
     Assert.assertEquals(ImmutableSet.of("dTag"), getTags(myds));
     removeTag(mystream, "stT");
     removeTag(mystream, "stTag");
+    removeTag(mystream, "Wow-WOW1");
+    removeTag(mystream, "WOW_WOW2");
     removeTag(myview, "viewT");
     removeTag(myview, "viewTag");
     Assert.assertTrue(getTags(mystream).isEmpty());
