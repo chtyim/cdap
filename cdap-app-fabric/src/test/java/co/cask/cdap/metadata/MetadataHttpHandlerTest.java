@@ -127,13 +127,13 @@ public class MetadataHttpHandlerTest extends MetadataTestBase {
     );
     Set<MetadataSearchResultRecord> searchProperties = searchMetadata(Id.Namespace.DEFAULT,
                                                                       "aKey:aValue",
-                                                                      MetadataSearchTargetType.APPLICATION);
+                                                                      MetadataSearchTargetType.APP);
     Assert.assertEquals(expected, searchProperties);
-    searchProperties = searchMetadata(Id.Namespace.DEFAULT, "multiword:wow1", MetadataSearchTargetType.APPLICATION);
+    searchProperties = searchMetadata(Id.Namespace.DEFAULT, "multiword:wow1", MetadataSearchTargetType.APP);
     Assert.assertEquals(expected, searchProperties);
-    searchProperties = searchMetadata(Id.Namespace.DEFAULT, "multiword:woW5", MetadataSearchTargetType.APPLICATION);
+    searchProperties = searchMetadata(Id.Namespace.DEFAULT, "multiword:woW5", MetadataSearchTargetType.APP);
     Assert.assertEquals(expected, searchProperties);
-    searchProperties = searchMetadata(Id.Namespace.DEFAULT, "WOW3", MetadataSearchTargetType.APPLICATION);
+    searchProperties = searchMetadata(Id.Namespace.DEFAULT, "WOW3", MetadataSearchTargetType.APP);
     Assert.assertEquals(expected, searchProperties);
 
     // test search for stream
