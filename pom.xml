@@ -1636,10 +1636,10 @@
           <artifactId>maven-surefire-plugin</artifactId>
           <version>2.22.2</version>
           <configuration>
-            <argLine>-Xmx3000m -Djava.awt.headless=true -XX:+UseG1GC -XX:OnOutOfMemoryError="kill -9 %p" -XX:+HeapDumpOnOutOfMemoryError</argLine>
+            <argLine>-Xmx2048m -Djava.awt.headless=true -XX:+UseG1GC -XX:OnOutOfMemoryError="kill -9 %p" -XX:+HeapDumpOnOutOfMemoryError</argLine>
             <redirectTestOutputToFile>${surefire.redirectTestOutputToFile}</redirectTestOutputToFile>
             <reuseForks>false</reuseForks>
-            <forkCount>2C</forkCount>
+            <forkCount>1.5C</forkCount>
             <reportFormat>plain</reportFormat>
             <trimStackTrace>false</trimStackTrace>
             <systemPropertyVariables>
