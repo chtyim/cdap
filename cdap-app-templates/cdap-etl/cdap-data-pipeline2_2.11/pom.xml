@@ -173,6 +173,15 @@
         <artifactId>scala-maven-plugin</artifactId>
         <version>3.3.1</version>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <argLine>-Xmx4096m -Djava.awt.headless=true -XX:+UseG1GC -XX:OnOutOfMemoryError="kill -9 %p" -XX:+HeapDumpOnOutOfMemoryError</argLine>
+          <forkCount>2</forkCount>
+        </configuration>
+      </plugin>
+
       <!-- copy the source from cdap-data-pipeline in order to compile everything as scala 2.11 -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
